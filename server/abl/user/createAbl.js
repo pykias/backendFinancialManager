@@ -53,8 +53,7 @@ async function CreateAbl(req, res) {
 
 // Pomocná funkce pro hashování hesla
 async function hashPassword(password) {
-    // Použijte knihovnu pro hashování, např. bcrypt
-    const saltRounds = 10; // Doporučené kolo solení pro bcrypt
+    const saltRounds = 10;
     // return bcrypt.hash(password, saltRounds);
     return password; // Odstranit pokud přidam hashování přes bcrypt
 }
