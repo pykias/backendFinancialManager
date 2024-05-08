@@ -26,10 +26,6 @@ function TransactionList() {
                     <Icon path={mdiPlusBoxOutline} size={1} color={"white"} /> Nová
                     transakce
                 </Button>
-                <Button variant="success" disabled>
-                    <Icon path={mdiPlusBoxMultipleOutline} size={1} color={"white"} />{" "}
-                    Nové transakce
-                </Button>
             </div>
             {!!showTransactionForm ? (
                 <TransactionForm

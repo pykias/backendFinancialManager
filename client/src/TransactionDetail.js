@@ -1,11 +1,9 @@
-// TransactionDetail.js
 import TransactionSummary from "./TransactionSummary";
 import TransactionActions from "./TransactionActions";
 
 function TransactionDetail({ transaction }) {
     let totalAmount = 0;
 
-    // Příklad výpočtu celkové částky, pokud existují položky v transakci
     if (transaction.items) {
         totalAmount = transaction.items.reduce((sum, item) => sum + item.amount, 0);
     }

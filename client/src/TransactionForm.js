@@ -16,7 +16,11 @@ function TransactionForm({ setShowTransactionForm, transaction }) {
     const isPending = state === "pending";
 
     return (
-        <Modal show={true} onHide={() => setShowTransactionForm(false)}>
+        <Modal
+            show={true}
+            onHide={() => setShowTransactionForm(false)}
+            centered
+        >
             <Form
                 onSubmit={async (e) => {
                     e.preventDefault();
@@ -39,9 +43,7 @@ function TransactionForm({ setShowTransactionForm, transaction }) {
                 }}
             >
                 <Modal.Header>
-                    <Modal.Title>{`${
-                        transaction.id ? "Upravit" : "Vytvořit"
-                    } transakci`}</Modal.Title>
+                    <Modal.Title>{`${transaction.id ? "Upravit" : "Vytvořit"} transakci`}</Modal.Title>
                     <CloseButton onClick={() => setShowTransactionForm(false)} />
                 </Modal.Header>
                 <Modal.Body style={{ position: "relative" }}>
@@ -78,6 +80,7 @@ function TransactionForm({ setShowTransactionForm, transaction }) {
                             type="text"
                             name="name"
                             required
+                            minLength={3}
                             defaultValue={transaction.name}
                         />
                     </Form.Group>
@@ -88,6 +91,23 @@ function TransactionForm({ setShowTransactionForm, transaction }) {
                             name="amount"
                             required
                             defaultValue={transaction.amount}
+                        />
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Typ transakce</Form.Label>
+                        <Form.Select name="type" required defaultValue={transaction.type || ""}>
+                            <option value="">Vyberte typ...</option>
+                            <option value="income">Příjem</option>
+                            <option value="expense">Výdaj</option>
+                        </Form.Select>
+                    </Form.Group>
+                    <Form.Group className="mb-3">
+                        <Form.Label>Kategorie</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="category"
+                            required
+                            defaultValue={transaction.category || ""}
                         />
                     </Form.Group>
                 </Modal.Body>
@@ -122,7 +142,6 @@ function pendingStyle() {
         opacity: "0.5",
     };
 }
-
 function transactionDateToInput(date) {
     date = new Date(date);
     const year = date.getFullYear();

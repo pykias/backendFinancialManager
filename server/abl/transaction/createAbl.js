@@ -19,12 +19,12 @@ const schema = {
   additionalProperties: false,
 };
 
-async function CreateEventAbl(req, res) {
+async function CreateTransactionAbl(req, res) {
   try {
-    let event = req.body;
+    let transaction = req.body;
 
     // validate vstupu
-    const valid = ajv.validate(schema, event);
+    const valid = ajv.validate(schema, transaction);
     if (!valid) {
       res.status(400).json({
         code: "dtoInIsNotValid",
@@ -35,11 +35,11 @@ async function CreateEventAbl(req, res) {
     }
 
     // Vytvoření finanční události
-    const createdEvent = await transactionDao.create(event);
-    res.json(createdEvent);
+    const createdTransaction = await transactionDao.create(transaction);
+    res.json(createdTransaction);
   } catch (e) {
     res.status(500).json({ message: e.message });
   }
 }
 
-module.exports = CreateEventAbl;
+module.exports = CreateTransactionAbl;

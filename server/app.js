@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 });
 
 // Definování cest pro jednotlivé kontrolery
-app.use("/transaction", eventController);
+app.use("/transactions", eventController);
 app.use("/user", userController);
 app.use("/attendance", attendanceController);
 

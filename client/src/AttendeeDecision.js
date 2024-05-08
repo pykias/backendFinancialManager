@@ -2,7 +2,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 
 import { useContext } from "react";
 import { UserContext } from "./UserContext";
-import { EventListContext } from "./EventListContext";
+import { TransactionListContext } from "./TransactionListContext";
 
 import Icon from "@mdi/react";
 import {
@@ -12,12 +12,12 @@ import {
   mdiPlusCircleOutline,
 } from "@mdi/js";
 
-function AttendeeDecision({ event }) {
+function AttendeeDecision({ transaction }) {
   const { loggedInUser } = useContext(UserContext);
-  const { handlerMap } = useContext(EventListContext);
+  const { handlerMap } = useContext(TransactionListContext);
 
-  const loggedInUserAttendance = getLoggedInUserAttendance(event, loggedInUser);
-  const guestsCount = event.userMap?.[loggedInUser?.id]?.guests || 0;
+  const loggedInUserAttendance = getLoggedInUserAttendance(transaction, loggedInUser);
+  const guestsCount = transaction.userMap?.[loggedInUser?.id]?.guests || 0;
   const guestsColor = getGuestsCount(guestsCount);
 
   return loggedInUser ? (
@@ -40,21 +40,21 @@ function AttendeeDecision({ event }) {
         <Dropdown.Menu>
           {decisionButton({
             handlerMap,
-            event,
+            transaction,
             loggedInUser,
             color: "#69a765",
             text: "jdu",
           })}
           {decisionButton({
             handlerMap,
-            event,
+            transaction,
             loggedInUser,
             color: "#ff2216",
             text: "nejdu",
           })}
           {decisionButton({
             handlerMap,
-            event,
+            transaction,
             loggedInUser,
             color: "#ffb447",
             text: "nevím",
@@ -75,7 +75,7 @@ function AttendeeDecision({ event }) {
           {[0, 1, 2, 3, 4, 5, 6].map((numberOfGuests) => {
             return guestsButton({
               handlerMap,
-              event,
+              transaction,
               loggedInUser,
               numberOfGuests,
             });
@@ -96,17 +96,17 @@ function dropdownStyle() {
   };
 }
 
-function getLoggedInUserAttendance(event, loggedInUser) {
+function getLoggedInUserAttendance(transaction, loggedInUser) {
   let attendance;
   let iconPath;
   let color;
-  if (loggedInUser && event.userMap?.[loggedInUser?.id]?.attendance === "yes") {
+  if (loggedInUser && transaction.userMap?.[loggedInUser?.id]?.attendance === "yes") {
     attendance = "jdu";
     iconPath = mdiEmoticonHappyOutline;
     color = "#69a765";
   } else if (
     loggedInUser &&
-    event.userMap?.[loggedInUser?.id]?.attendance === "no"
+      transaction.userMap?.[loggedInUser?.id]?.attendance === "no"
   ) {
     attendance = "nejdu";
     iconPath = mdiEmoticonSadOutline;
@@ -126,14 +126,14 @@ function componentStyle(color) {
   };
 }
 
-function decisionButton({ handlerMap, event, loggedInUser, color, text }) {
+function decisionButton({ handlerMap, transaction, loggedInUser, color, text }) {
   return (
     <Dropdown.Item
       key={text}
       style={{ color }}
       onClick={() =>
         handlerMap.handleAttendance({
-          eventId: event.id,
+          transactionId: transaction.id,
           userId: loggedInUser.id,
           attendance: text === "jdu" ? "yes" : text === "nejdu" ? "no" : null,
         })
@@ -144,14 +144,17 @@ function decisionButton({ handlerMap, event, loggedInUser, color, text }) {
   );
 }
 
-function guestsButton({ handlerMap, event, loggedInUser, numberOfGuests }) {
+function guestsButton({ handlerMap, transaction, loggedInUser, numberOfGuests }) {
+  handlerMap.handleAttendance = function (param) {
+
+  };
   return (
     <Dropdown.Item
       key={numberOfGuests.toString()}
       style={{ color: getGuestsCount(numberOfGuests) }}
       onClick={() =>
         handlerMap.handleAttendance({
-          eventId: event.id,
+          transactionId: transaction.id,
           userId: loggedInUser.id,
           guests: numberOfGuests,
         })

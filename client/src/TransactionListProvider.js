@@ -32,6 +32,9 @@ function TransactionListProvider({ children }) {
     }
 
     async function handleCreate(dtoIn) {
+        // Převeďte hodnoty na správné typy
+        dtoIn.amount = parseFloat(dtoIn.amount);
+
         setTransactionLoadObject((current) => ({ ...current, state: "pending" }));
         const response = await fetch(`http://localhost:8000/transaction/create`, {
             method: "POST",
@@ -58,6 +61,9 @@ function TransactionListProvider({ children }) {
     }
 
     async function handleUpdate(dtoIn) {
+        // Převeďte hodnoty na správné typy
+        dtoIn.amount = parseFloat(dtoIn.amount);
+
         setTransactionLoadObject((current) => ({ ...current, state: "pending" }));
         const response = await fetch(`http://localhost:8000/transaction/update`, {
             method: "POST",

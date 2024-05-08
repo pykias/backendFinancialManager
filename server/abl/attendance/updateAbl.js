@@ -43,7 +43,7 @@ async function UpdateTransactionAbl(req, res) {
             return;
         }
 
-        // check if transaction exists
+        // check if transactions exists
         const transaction = await transactionDao.get(dtoIn.transactionId);
         if (!transaction) {
             res.status(404).json({
@@ -53,7 +53,7 @@ async function UpdateTransactionAbl(req, res) {
             return;
         }
 
-        // Assuming transactionDao.update is a function that updates a transaction
+        // Assuming transactionDao.update is a function that updates a transactions
         const updatedTransaction = await transactionDao.update(dtoIn.transactionId, dtoIn);
 
         res.json(updatedTransaction);

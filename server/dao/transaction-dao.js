@@ -2,7 +2,13 @@ const fs = require("fs");
 const path = require("path");
 const crypto = require("crypto");
 
+// Cesta k adresáři s transakcemi
 const transactionFolderPath = path.join(__dirname, "storage", "transactions");
+
+// Zkontrolujte existenci složky a vytvořte ji, pokud neexistuje
+if (!fs.existsSync(transactionFolderPath)) {
+    fs.mkdirSync(transactionFolderPath, { recursive: true });
+}
 
 // Pomocná funkce pro načtení souboru s transakcí podle ID
 function readTransactionFile(transactionId) {
