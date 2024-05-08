@@ -4,7 +4,7 @@ const app = express();
 const port = process.env.PORT || 8000; // Povolit konfiguraci portu prostřednictvím proměnných prostředí
 
 // Importovat kontrolery
-const eventController = require("./controller/event");
+const eventController = require("./controller/transaction");
 const userController = require("./controller/user");
 const attendanceController = require("./controller/attendance");
 
@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 });
 
 // Definování cest pro jednotlivé kontrolery
-app.use("/event", eventController);
+app.use("/transaction", eventController);
 app.use("/user", userController);
 app.use("/attendance", attendanceController);
 

@@ -26,7 +26,7 @@ function NavBar() {
                 </Navbar.Brand>
                 <Nav>
                     <NavDropdown
-                        title={loggedInUser ? loggedInUser.name : "Přihlaš se"}
+                        title={loggedInUser ? loggedInUser.name : "Login"}
                         drop={"start"}
                     >
                         {getUserMenuList({ userList, loggedInUser, handlerMap })}

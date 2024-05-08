@@ -27,7 +27,6 @@ function UserProvider({ children }) {
             });
     }, []);
 
-    // Hodnoty, které poskytuje kontext
     const value = {
         userList: userListDto.data || [],
         loggedInUser: loggedInUser
