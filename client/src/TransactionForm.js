@@ -21,7 +21,7 @@ function TransactionForm({ setShowTransactionForm, transaction }) {
                 onSubmit={async (e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    var formData = Object.fromEntries(new FormData(e.target));
+                    const formData = Object.fromEntries(new FormData(e.target));
                     formData.date = new Date(formData.date).toISOString();
                     try {
                         if (transaction.id) {
