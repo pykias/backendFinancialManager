@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require("path");
+const crypto = require("crypto");
 
 const attendanceFolderPath = path.join(__dirname, "storage", "attendance");
 
@@ -14,6 +15,21 @@ function get(userId, financeEventId) {
     } catch (error) {
         throw { code: "failedToReadAttendance", message: error.message };
     }
+    async function create(user) {
+        try {
+            // Ensure the password is hashed before storing the user
+            if (user.password) {
+                user.password = await hashPassword(user.password);
+            }
+
+            user.id = crypto.randomBytes(16).toString("hex");
+            const filePath = path.join(userFolderPath, `${user.id}.json`);
+            const fileData = JSON.stringify(user);
+            fs.writeFileSync(filePath, fileData, "utf8");
+            return user;
+        } catch (error) {
+            throw { code: "failedToCreateUser", message: error.message };
+        }
 }
 
 // Funkce pro aktualizaci informací o účasti
@@ -70,7 +86,10 @@ function list() {
 // Exportování funkcí pro použití v ostatních částech aplikace
 module.exports = {
     get,
+    create,
     update,
     remove,
     list,
+    eventMap,
+    userMap,
 };
