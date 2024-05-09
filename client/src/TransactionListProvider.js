@@ -5,7 +5,7 @@ function TransactionListProvider({ children }) {
     const [transactionLoadObject, setTransactionLoadObject] = useState({
         state: "ready",
         error: null,
-        data: null,
+        data: [],
     });
 
     useEffect(() => {
@@ -20,7 +20,6 @@ function TransactionListProvider({ children }) {
         const responseJson = await response.json();
         if (response.status < 400) {
             setTransactionLoadObject({ state: "ready", data: responseJson });
-            return responseJson;
         } else {
             setTransactionLoadObject((current) => ({
                 state: "error",
@@ -32,7 +31,6 @@ function TransactionListProvider({ children }) {
     }
 
     async function handleCreate(dtoIn) {
-        // Převeďte hodnoty na správné typy
         dtoIn.amount = parseFloat(dtoIn.amount);
 
         setTransactionLoadObject((current) => ({ ...current, state: "pending" }));
@@ -47,21 +45,22 @@ function TransactionListProvider({ children }) {
 
         if (response.status < 400) {
             setTransactionLoadObject((current) => {
-                current.data.push(responseJson);
-                current.data.sort((a, b) => new Date(a.date) - new Date(b.date));
-                return { state: "ready", data: current.data };
+                const updatedData = [...current.data, responseJson];
+                updatedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+                return { state: "ready", data: updatedData };
             });
             return responseJson;
         } else {
-            setTransactionLoadObject((current) => {
-                return { state: "error", data: current.data, error: responseJson };
-            });
+            setTransactionLoadObject((current) => ({
+                state: "error",
+                data: current.data,
+                error: responseJson,
+            }));
             throw new Error(JSON.stringify(responseJson, null, 2));
         }
     }
 
     async function handleUpdate(dtoIn) {
-        // Převeďte hodnoty na správné typy
         dtoIn.amount = parseFloat(dtoIn.amount);
 
         setTransactionLoadObject((current) => ({ ...current, state: "pending" }));
@@ -77,11 +76,36 @@ function TransactionListProvider({ children }) {
                 const transactionIndex = current.data.findIndex(
                     (t) => t.id === responseJson.id
                 );
-                current.data[transactionIndex] = responseJson;
-                current.data.sort((a, b) => new Date(a.date) - new Date(b.date));
-                return { state: "ready", data: current.data };
+                const updatedData = [...current.data];
+                updatedData[transactionIndex] = responseJson;
+                updatedData.sort((a, b) => new Date(a.date) - new Date(b.date));
+                return { state: "ready", data: updatedData };
             });
             return responseJson;
+        } else {
+            setTransactionLoadObject((current) => ({
+                state: "error",
+                data: current.data,
+                error: responseJson,
+            }));
+            throw new Error(JSON.stringify(responseJson, null, 2));
+        }
+    }
+
+    async function handleDelete(transactionId) {
+        setTransactionLoadObject((current) => ({ ...current, state: "pending" }));
+        const response = await fetch(`http://localhost:8000/transaction/delete`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: transactionId }),
+        });
+        const responseJson = await response.json();
+
+        if (response.status < 400) {
+            setTransactionLoadObject((current) => {
+                const updatedData = current.data.filter((t) => t.id !== transactionId);
+                return { state: "ready", data: updatedData };
+            });
         } else {
             setTransactionLoadObject((current) => ({
                 state: "error",
@@ -95,7 +119,7 @@ function TransactionListProvider({ children }) {
     const value = {
         state: transactionLoadObject.state,
         transactionList: transactionLoadObject.data || [],
-        handlerMap: { handleCreate, handleUpdate },
+        handlerMap: { handleCreate, handleUpdate, handleDelete },
     };
 
     return (

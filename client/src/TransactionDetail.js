@@ -1,5 +1,4 @@
 import TransactionSummary from "./TransactionSummary";
-import TransactionActions from "./TransactionActions";
 
 function TransactionDetail({ transaction }) {
     let totalAmount = 0;
@@ -14,9 +13,6 @@ function TransactionDetail({ transaction }) {
             <div className="row" style={{ margin: "0" }}>
                 <div className="col-12 col-sm-6" style={{ padding: "0" }}>
                     <TransactionSummary totalAmount={totalAmount} />
-                </div>
-                <div className="col-12 col-md-6" style={actionsColumnStyle()}>
-                    <TransactionActions transaction={transaction} />
                 </div>
             </div>
         </div>

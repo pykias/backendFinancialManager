@@ -2,19 +2,18 @@ import { useContext, useState } from "react";
 import { TransactionListContext } from "./TransactionListContext.js";
 
 import Button from "react-bootstrap/esm/Button.js";
-
 import TransactionCard from "./TransactionCard";
 import TransactionForm from "./TransactionForm.js";
 import Container from "react-bootstrap/esm/Container.js";
 
 import Icon from "@mdi/react";
-import { mdiPlusBoxOutline, mdiPlusBoxMultipleOutline } from "@mdi/js";
+import { mdiPlusBoxOutline } from "@mdi/js";
 
 function TransactionList() {
-    const { transactionList } = useContext(TransactionListContext);
+    const { transactionList, handlerMap } = useContext(TransactionListContext); // Zde získáte funkci handleDelete
     const [showTransactionForm, setShowTransactionForm] = useState(false);
 
-    // Zatim me nenapadlo nic lepsiho
+    // Filtrace transakcí (např. podle data)
     const filteredTransactionList = transactionList.filter(
         (transaction) => new Date(transaction.date) > new Date()
     );
@@ -27,18 +26,21 @@ function TransactionList() {
                     transakce
                 </Button>
             </div>
-            {!!showTransactionForm ? (
+            {/* Zobrazit transakční formulář */}
+            {!!showTransactionForm && (
                 <TransactionForm
                     transaction={showTransactionForm}
                     setShowTransactionForm={setShowTransactionForm}
                 />
-            ) : null}
+            )}
+            {/* Zobrazit transakční karty */}
             {filteredTransactionList.map((transaction) => {
                 return (
                     <TransactionCard
                         key={transaction.id}
                         transaction={transaction}
                         setShowTransactionForm={setShowTransactionForm}
+                        handleDelete={handlerMap.handleDelete}
                     />
                 );
             })}

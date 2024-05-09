@@ -5,9 +5,9 @@ import TransactionDateTimeBadge from "./TransactionDateTimeBadge";
 import TransactionDetail from "./TransactionDetail";
 
 import Icon from "@mdi/react";
-import { mdiEyeOutline, mdiPencil } from "@mdi/js";
+import {mdiEyeOutline, mdiPencil, mdiTrashCan} from "@mdi/js";
 
-function TransactionCard({ transaction, setShowTransactionForm }) {
+function TransactionCard({ transaction, setShowTransactionForm, handleDelete}) {
     const navigate = useNavigate();
 
     return (
@@ -26,11 +26,14 @@ function TransactionCard({ transaction, setShowTransactionForm }) {
                     onClick={() => navigate("/transactionDetail?id=" + transaction.id)}
                     size={"sm"}
                 >
-                    <Icon path={mdiEyeOutline} size={0.7} />
+                    <Icon path={mdiEyeOutline} size={0.7}/>
                 </Button>
                 <Button onClick={() => setShowTransactionForm(transaction)} size={"sm"}>
-                    <Icon path={mdiPencil} size={0.7} />
+                    <Icon path={mdiPencil} size={0.7}/>
                 </Button>
+                    <Button variant="danger" size="sm" onClick={() => handleDelete(transaction.id)}>
+                        <Icon path={mdiTrashCan} size={0.8} color="white"/>
+                    </Button>
             </div>
         </div>
     );
