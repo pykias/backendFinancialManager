@@ -3,21 +3,21 @@ const path = require("path");
 const crypto = require("crypto");
 
 // Cesta k adresáři s transakcemi
-const transactionFolderPath = path.join(__dirname, "storage", "transactions");
+const transactionFolderPath = path.join(__dirname, "storage", "transactionList");
 
-// Zkontrolujte existenci složky a vytvořte ji, pokud neexistuje
+// Kontrola a vytvoření složky, pokud neexistuje
 if (!fs.existsSync(transactionFolderPath)) {
     fs.mkdirSync(transactionFolderPath, { recursive: true });
 }
 
 // Pomocná funkce pro načtení souboru s transakcí podle ID
 function readTransactionFile(transactionId) {
+    const filePath = path.join(transactionFolderPath, `${transactionId}.json`);
     try {
-        const filePath = path.join(transactionFolderPath, `${transactionId}.json`);
         const fileData = fs.readFileSync(filePath, "utf8");
         return JSON.parse(fileData);
     } catch (error) {
-        if (error.code === "ENOENT") return null; // Soubor nebyl nalezen
+        if (error.code === "ENOENT") return null; // Soubor nenalezen
         throw { code: "failedToReadTransaction", message: error.message };
     }
 }
@@ -43,9 +43,7 @@ function get(transactionId) {
 // Aktualizace transakce
 function update(transaction) {
     const currentTransaction = get(transaction.id);
-    if (!currentTransaction) {
-        return null; // Transakce neexistuje
-    }
+    if (!currentTransaction) return null; // Transakce neexistuje
 
     // Aktualizace stávající transakce novými daty
     const updatedTransaction = { ...currentTransaction, ...transaction };
@@ -56,8 +54,8 @@ function update(transaction) {
 
 // Odstranění transakce
 function remove(transactionId) {
+    const filePath = path.join(transactionFolderPath, `${transactionId}.json`);
     try {
-        const filePath = path.join(transactionFolderPath, `${transactionId}.json`);
         fs.unlinkSync(filePath); // Smazání souboru
     } catch (error) {
         if (error.code === "ENOENT") return {}; // Soubor neexistuje
@@ -69,7 +67,7 @@ function remove(transactionId) {
 function list() {
     try {
         const files = fs.readdirSync(transactionFolderPath);
-        return files.map((file) => readTransactionFile(file.replace(".json", ""))).filter(Boolean); // Odebere neplatné hodnoty
+        return files.map((file) => readTransactionFile(file.replace(".json", ""))).filter(Boolean);
     } catch (error) {
         throw { code: "failedToListTransactions", message: error.message };
     }

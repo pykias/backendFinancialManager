@@ -1,38 +1,51 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "./Navbar";
+import Navbar from "./Navbar.js";
+
 const Layout = () => {
     return (
         <>
-            <div className="header">
-                <Navbar/>
+            <div style={headerStyle()} className="shadow-lg">
+                <Navbar />
             </div>
-            <div style={bodyStyle()}>
+            <div style={bodyStyle()} className="rounded shadow-sm">
                 <Outlet />
             </div>
-            <div className="footer text-light" style={footerStyle()}>
+            <div style={footerStyle()} className="rounded-top shadow-lg">
                 © Finanční Aplikace
             </div>
         </>
     );
 };
 
+function headerStyle() {
+    return {
+        background: "linear-gradient(90deg, #007bff, #5a67d8)",
+        padding: "16px",
+        borderRadius: "8px",
+        marginBottom: "16px",
+        color: "#fff"
+    };
+}
+
 function bodyStyle() {
     return {
         overflow: "auto",
-        padding: "16px",
+        padding: "24px",
         flex: "1",
-        borderTop: "white 2px solid",
-        borderBottom: "white 2px solid",
-        backgroundColor: "#f4f4f4"  // Neutrální pozadí pro obsah
+        backgroundColor: "#f9f9f9",  // Světle neutrální pozadí
+        borderTop: "2px solid #ccc",
+        borderBottom: "2px solid #ccc"
     };
 }
 
 function footerStyle() {
     return {
-        padding: "8px",
+        padding: "12px",
         textAlign: "center",
-        backgroundColor: "#007bff",  // Modrá barva pro zápatí
-        color: "#fff"
+        background: "linear-gradient(90deg, #007bff, #5a67d8)",
+        color: "#fff",
+        borderRadius: "8px 8px 0 0",
+        marginTop: "16px"
     };
 }
 

@@ -3,7 +3,6 @@ import { TransactionListContext } from "./TransactionListContext.js";
 
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import CloseButton from "react-bootstrap/CloseButton";
 import Form from "react-bootstrap/Form";
 import Alert from "react-bootstrap/Alert";
 
@@ -44,7 +43,6 @@ function TransactionForm({ setShowTransactionForm, transaction }) {
             >
                 <Modal.Header>
                     <Modal.Title>{`${transaction.id ? "Upravit" : "Vytvořit"} transakci`}</Modal.Title>
-                    <CloseButton onClick={() => setShowTransactionForm(false)} />
                 </Modal.Header>
                 <Modal.Body style={{ position: "relative" }}>
                     <Alert
@@ -101,15 +99,6 @@ function TransactionForm({ setShowTransactionForm, transaction }) {
                             <option value="expense">Výdaj</option>
                         </Form.Select>
                     </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Kategorie</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="category"
-                            required
-                            defaultValue={transaction.category || ""}
-                        />
-                    </Form.Group>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
@@ -142,6 +131,7 @@ function pendingStyle() {
         opacity: "0.5",
     };
 }
+
 function transactionDateToInput(date) {
     date = new Date(date);
     const year = date.getFullYear();

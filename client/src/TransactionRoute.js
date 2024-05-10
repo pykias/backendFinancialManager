@@ -1,6 +1,6 @@
 import { useContext } from "react";
 import { TransactionContext } from "./TransactionContext";
-import Button from "react-bootstrap/esm/Button.js";
+import Button from "react-bootstrap/esm/Button";
 import { useNavigate } from "react-router-dom";
 
 import TransactionDateTimeBadge from "./TransactionDateTimeBadge";

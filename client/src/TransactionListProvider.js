@@ -92,29 +92,45 @@ function TransactionListProvider({ children }) {
         }
     }
 
-    async function handleDelete(transactionId) {
-        setTransactionLoadObject((current) => ({ ...current, state: "pending" }));
+    async function deleteTransactionFromBackend(transactionId) {
         const response = await fetch(`http://localhost:8000/transaction/delete`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ id: transactionId }),
         });
-        const responseJson = await response.json();
 
-        if (response.status < 400) {
-            setTransactionLoadObject((current) => {
-                const updatedData = current.data.filter((t) => t.id !== transactionId);
-                return { state: "ready", data: updatedData };
-            });
+        if (response.ok) {
+            return true;
         } else {
-            setTransactionLoadObject((current) => ({
-                state: "error",
-                data: current.data,
-                error: responseJson,
-            }));
+            const responseJson = await response.json();
             throw new Error(JSON.stringify(responseJson, null, 2));
         }
     }
+
+    async function handleDelete(transactionId) {
+        const confirmed = window.confirm("Opravdu chcete tuto transakci smazat?");
+        if (!confirmed) return;
+
+        setTransactionLoadObject((current) => ({ ...current, state: "pending" }));
+
+        try {
+            const success = await deleteTransactionFromBackend(transactionId);
+            if (success) {
+                setTransactionLoadObject((current) => {
+                    const updatedData = current.data.filter((t) => t.id !== transactionId);
+                    return { state: "ready", data: updatedData };
+                });
+            }
+        } catch (error) {
+            setTransactionLoadObject((current) => ({
+                state: "error",
+                data: current.data,
+                error: error.message,
+            }));
+            console.error("Error deleting transaction:", error.message);
+        }
+    }
+
 
     const value = {
         state: transactionLoadObject.state,

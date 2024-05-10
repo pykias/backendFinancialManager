@@ -1,14 +1,13 @@
 import { useContext, useState } from "react";
 import { TransactionListContext } from "./TransactionListContext.js";
 
-import Button from "react-bootstrap/esm/Button.js";
+import Button from "react-bootstrap/esm/Button";
 import TransactionCard from "./TransactionCard";
 import TransactionForm from "./TransactionForm.js";
-import Container from "react-bootstrap/esm/Container.js";
+import Container from "react-bootstrap/esm/Container";
 
 import Icon from "@mdi/react";
 import { mdiPlusBoxOutline } from "@mdi/js";
-
 function TransactionList() {
     const { transactionList, handlerMap } = useContext(TransactionListContext); // Zde získáte funkci handleDelete
     const [showTransactionForm, setShowTransactionForm] = useState(false);

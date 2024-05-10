@@ -1,5 +1,4 @@
 function AttendanceBadge({ colorScheme, count }) {
-  // get color based on colorScheme
   let color;
   if (colorScheme === "willAttend") {
     color = "#69a765";

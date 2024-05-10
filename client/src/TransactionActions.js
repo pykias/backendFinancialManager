@@ -1,6 +1,6 @@
 import Button from "react-bootstrap/esm/Button";
 import Icon from "@mdi/react";
-import { mdiPencil, mdiTrashCan } from "@mdi/js";
+import { mdiTrashCan } from "@mdi/js";
 
 function TransactionActions({ transaction }) {
     return (
@@ -12,10 +12,7 @@ function TransactionActions({ transaction }) {
     );
 }
 
-function handleDelete(transactionId) {
-    // Logika pro odstranění transakce
-    console.log(`Odstranit transakci s ID: ${transactionId}`);
-}
+
 
 function actionsStyle() {
     return {

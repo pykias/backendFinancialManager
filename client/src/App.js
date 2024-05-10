@@ -1,6 +1,4 @@
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-
 import Layout from "./Layout";
 import TransactionList from "./TransactionList";
 import UserProvider from "./UserProvider";

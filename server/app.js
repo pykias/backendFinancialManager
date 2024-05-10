@@ -4,7 +4,7 @@ const app = express();
 const port = process.env.PORT || 8000; // Povolit konfiguraci portu prostřednictvím proměnných prostředí
 
 // Importovat kontrolery
-const eventController = require("./controller/transaction");
+const transactionController = require("./controller/transaction");
 const userController = require("./controller/user");
 const attendanceController = require("./controller/attendance");
 
@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
 });
 
 // Definování cest pro jednotlivé kontrolery
-app.use("/transactions", eventController);
+app.use("/transaction", transactionController);
 app.use("/user", userController);
 app.use("/attendance", attendanceController);
 
@@ -30,4 +30,4 @@ app.listen(port, () => {
     console.log(`Financial Management App listening on port ${port}`);
 });
 
-module.exports = app; // Exportovat app pro testování nebo další použití
+module.exports = app;

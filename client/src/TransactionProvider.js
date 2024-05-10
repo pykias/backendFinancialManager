@@ -1,4 +1,3 @@
-
 import { useEffect, useState, useCallback } from "react";
 import { useLocation, useSearchParams } from "react-router-dom";
 
@@ -17,7 +16,9 @@ function TransactionProvider({ children }) {
         setTransactionLoadObject((current) => ({ ...current, state: "pending" }));
         const transactionId = searchParams.get("id");
         const response = await fetch(
-            `http://localhost:8000/transaction/get?id=${transactionId}`,
+            `http://localhost:8000/transaction/get?id=${new URLSearchParams(
+                location.search
+            ).get("id")}`,
             {
                 method: "GET",
             }
