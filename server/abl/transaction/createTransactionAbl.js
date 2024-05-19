@@ -13,7 +13,6 @@ const schema = {
     amount: { type: "number" },
     type: { type: "string", enum: ["income", "expense"] },
     desc: { type: "string", nullable: true, default: "" },
-    // Remove category from required properties
   },
   required: ["date", "name", "amount", "type"],
   additionalProperties: false,

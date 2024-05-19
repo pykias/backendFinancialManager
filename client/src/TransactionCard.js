@@ -1,68 +1,40 @@
-import Button from "react-bootstrap/esm/Button";
-import { useNavigate } from "react-router-dom";
+import React from "react";
+import Card from "react-bootstrap/Card";
+import Button from "react-bootstrap/Button";
+import { format } from "date-fns";
 
-import TransactionDateTimeBadge from "./TransactionDateTimeBadge";
-import TransactionDetail from "./TransactionDetail";
-
-import Icon from "@mdi/react";
-import { mdiEyeOutline, mdiPencil, mdiTrashCan } from "@mdi/js";
-
-function TransactionCard({ transaction, setShowTransactionForm, handleDelete }) {
-    const navigate = useNavigate();
-
+function TransactionCard({ transaction, setShowTransactionForm }) {
     return (
-        <div className="card border-0 shadow-lg rounded-lg" style={cardStyle()}>
-            <TransactionDateTimeBadge transaction={transaction} />
-            <TransactionDetail transaction={transaction} />
-            <div style={actionButtonsStyle()}>
-                <Button
-                    onClick={() => navigate("/transactionDetail?id=" + transaction.id)}
-                    size={"sm"}
-                    variant="primary"
-                >
-                    <Icon path={mdiEyeOutline} size={0.7} color="white" />
-                </Button>
-                <Button
-                    onClick={() => setShowTransactionForm(transaction)}
-                    size={"sm"}
-                    variant="warning"
-                >
-                    <Icon path={mdiPencil} size={0.7} color="white" />
-                </Button>
-                <Button
-                    variant="danger"
-                    size="sm"
-                    onClick={() => handleDelete(transaction.id)}
-                >
-                    <Icon path={mdiTrashCan} size={0.8} color="white" />
-                </Button>
-            </div>
-        </div>
+        <Card style={{ marginBottom: "15px" }}>
+            <Card.Body>
+                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                    <div>
+                        <div style={{ fontSize: "20px" }}>
+                            {format(new Date(transaction.date), "d MMM yyyy HH:mm")}
+                        </div>
+                        <div style={{ fontSize: "30px" }}>{transaction.name}</div>
+                    </div>
+                    <div style={{ fontSize: "30px" }}>
+                        {transaction.amount.toLocaleString("cs-CZ", {
+                            style: "currency",
+                            currency: "CZK",
+                        })}
+                    </div>
+                </div>
+                <div style={{ marginTop: "15px" }}>
+                    <Button
+                        variant="primary"
+                        onClick={() => setShowTransactionForm(transaction)}
+                    >
+                        Upravit
+                    </Button>
+                    <Button variant="danger" style={{ marginLeft: "10px" }}>
+                        Smazat
+                    </Button>
+                </div>
+            </Card.Body>
+        </Card>
     );
-}
-
-function cardStyle() {
-    return {
-        margin: "16px auto",
-        padding: "16px",
-        display: "grid",
-        gridTemplateColumns: "max-content auto 48px",
-        columnGap: "12px",
-        backgroundColor: "#f9f9f9",
-        borderRadius: "16px",
-        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
-        maxWidth: "680px",
-        transition: "transform 0.2s",
-    };
-}
-
-function actionButtonsStyle() {
-    return {
-        display: "grid",
-        gap: "4px",
-        justifyContent: "center",
-        alignItems: "center",
-    };
 }
 
 export default TransactionCard;
