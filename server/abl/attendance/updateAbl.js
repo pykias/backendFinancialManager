@@ -11,10 +11,9 @@ const schema = {
         transactionId: { type: "string", minLength: 32, maxLength: 32 },
         amount: { type: "number" },
         date: { type: "string", format: "date-time" },
-        category: { type: "string" },
         note: { type: "string", maxLength: 255, nullable: true }
     },
-    required: ["userId", "transactionId", "amount", "date", "category"],
+    required: ["userId", "transactionId", "amount", "date",],
     additionalProperties: false,
 };
 

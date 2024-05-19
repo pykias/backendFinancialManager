@@ -3,7 +3,7 @@ const addFormats = require("ajv-formats").default;
 const ajv = new Ajv({ allErrors: true });
 addFormats(ajv);
 
-const transactionDao = require("../../dao/transaction-dao")
+const transactionDao = require("../../dao/transaction-dao");
 
 const schema = {
   type: "object",
@@ -12,10 +12,10 @@ const schema = {
     name: { type: "string", minLength: 3 },
     amount: { type: "number" },
     type: { type: "string", enum: ["income", "expense"] },
-    category: { type: "string" },
     desc: { type: "string", nullable: true, default: "" },
+    // Remove category from required properties
   },
-  required: ["date", "name", "amount", "type", "category"],
+  required: ["date", "name", "amount", "type"],
   additionalProperties: false,
 };
 

@@ -4,7 +4,6 @@ const crypto = require("crypto");
 
 const messageFolderPath = path.join(__dirname, "storage", "messageList");
 
-// Method to read an message from a file
 function get(messageId) {
     try {
         const filePath = path.join(messageFolderPath, `${messageId}.json`);
@@ -16,7 +15,6 @@ function get(messageId) {
     }
 }
 
-// Method to write an message to a file
 function create(message) {
     try {
         message.id = crypto.randomBytes(16).toString("hex");
@@ -29,7 +27,6 @@ function create(message) {
     }
 }
 
-// Method to update message in a file
 function update(message) {
     try {
         const currentMessage = get(message.id);
@@ -44,7 +41,6 @@ function update(message) {
     }
 }
 
-// Method to remove an message from a file
 function remove(messageId) {
     try {
         const filePath = path.join(messageFolderPath, `${messageId}.json`);
@@ -58,7 +54,6 @@ function remove(messageId) {
     }
 }
 
-// Method to list messages in a folder
 function list() {
     try {
         const files = fs.readdirSync(messageFolderPath);

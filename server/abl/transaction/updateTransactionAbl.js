@@ -13,10 +13,9 @@ const schema = {
     name: { type: "string", minLength: 3 },
     amount: { type: "number" },
     type: { type: "string", enum: ["income", "expense"] },
-    category: { type: "string" },
     desc: { type: "string", nullable: true, default: "" },
   },
-  required: ["id", "date", "name", "amount", "type", "category"],
+  required: ["id", "date", "name", "amount", "type",],
   additionalProperties: false,
 };
 

@@ -1,5 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
-import { useLocation, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 
 import { TransactionContext } from "./TransactionContext.js";
 
@@ -9,24 +9,21 @@ function TransactionProvider({ children }) {
         error: null,
         data: null,
     });
-    const location = useLocation();
     const [searchParams] = useSearchParams();
 
     const handleLoad = useCallback(async () => {
         setTransactionLoadObject((current) => ({ ...current, state: "pending" }));
         const transactionId = searchParams.get("id");
-        const response = await fetch(
-            `http://localhost:8000/transaction/get?id=${new URLSearchParams(
-                location.search
-            ).get("id")}`,
-            {
-                method: "GET",
-            }
-        );
+        if (!transactionId) {
+            console.log("No transaction ID provided.");
+            return; // Předčasně ukončíme funkci, pokud není ID dostupné
+        }
+        const response = await fetch(`http://localhost:8000/transaction/get?id=${transactionId}`, {
+            method: "GET",
+        });
         const responseJson = await response.json();
         if (response.status < 400) {
             setTransactionLoadObject({ state: "ready", data: responseJson });
-            return responseJson;
         } else {
             setTransactionLoadObject((current) => ({
                 state: "error",
@@ -39,7 +36,7 @@ function TransactionProvider({ children }) {
 
     useEffect(() => {
         handleLoad();
-    }, [handleLoad, location.search]);
+    }, [handleLoad]);
 
     const value = {
         transaction: transactionLoadObject.data,

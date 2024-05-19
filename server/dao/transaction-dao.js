@@ -1,79 +1,79 @@
-const fs = require("fs");
+const fs = require("fs").promises;
 const path = require("path");
 const crypto = require("crypto");
 
-// Cesta k adresáři s transakcemi
 const transactionFolderPath = path.join(__dirname, "storage", "transactionList");
 
-// Kontrola a vytvoření složky, pokud neexistuje
-if (!fs.existsSync(transactionFolderPath)) {
-    fs.mkdirSync(transactionFolderPath, { recursive: true });
+async function ensureFolderExists() {
+    try {
+        await fs.readdir(transactionFolderPath);
+    } catch (error) {
+        if (error.code === "ENOENT") {
+            await fs.mkdir(transactionFolderPath, { recursive: true });
+        } else {
+            throw { code: "failedToEnsureFolder", message: error.message };
+        }
+    }
 }
 
-// Pomocná funkce pro načtení souboru s transakcí podle ID
-function readTransactionFile(transactionId) {
+async function readTransactionFile(transactionId) {
     const filePath = path.join(transactionFolderPath, `${transactionId}.json`);
     try {
-        const fileData = fs.readFileSync(filePath, "utf8");
+        const fileData = await fs.readFile(filePath, "utf8");
         return JSON.parse(fileData);
     } catch (error) {
-        if (error.code === "ENOENT") return null; // Soubor nenalezen
+        if (error.code === "ENOENT") return null;
         throw { code: "failedToReadTransaction", message: error.message };
     }
 }
 
-// Vytvoření nové transakce
-function create(transaction) {
-    try {
-        const transactionId = crypto.randomBytes(16).toString("hex");
-        transaction.id = transactionId;
-        const filePath = path.join(transactionFolderPath, `${transactionId}.json`);
-        fs.writeFileSync(filePath, JSON.stringify(transaction), "utf8");
-        return transaction;
-    } catch (error) {
-        throw { code: "failedToCreateTransaction", message: error.message };
-    }
+async function create(transaction) {
+    const transactionId = crypto.randomBytes(16).toString("hex");
+    transaction.id = transactionId;
+    const filePath = path.join(transactionFolderPath, `${transactionId}.json`);
+    await fs.writeFile(filePath, JSON.stringify(transaction), "utf8");
+    return transaction;
 }
 
-// Získání transakce podle ID
-function get(transactionId) {
+async function get(transactionId) {
     return readTransactionFile(transactionId);
 }
 
-// Aktualizace transakce
-function update(transaction) {
-    const currentTransaction = get(transaction.id);
-    if (!currentTransaction) return null; // Transakce neexistuje
-
-    // Aktualizace stávající transakce novými daty
+async function update(transaction) {
+    const currentTransaction = await get(transaction.id);
+    if (!currentTransaction) {
+        throw { code: "TransactionNotFound", message: "Transaction does not exist." };
+    }
     const updatedTransaction = { ...currentTransaction, ...transaction };
     const filePath = path.join(transactionFolderPath, `${transaction.id}.json`);
-    fs.writeFileSync(filePath, JSON.stringify(updatedTransaction), "utf8");
+    await fs.writeFile(filePath, JSON.stringify(updatedTransaction), "utf8");
     return updatedTransaction;
 }
 
-// Odstranění transakce
-function remove(transactionId) {
+async function remove(transactionId) {
     const filePath = path.join(transactionFolderPath, `${transactionId}.json`);
     try {
-        fs.unlinkSync(filePath); // Smazání souboru
+        await fs.unlink(filePath);
     } catch (error) {
-        if (error.code === "ENOENT") return {}; // Soubor neexistuje
+        if (error.code === "ENOENT") {
+            return {};
+        }
         throw { code: "failedToRemoveTransaction", message: error.message };
     }
 }
 
-// Výpis všech transakcí
-function list() {
+async function list() {
     try {
-        const files = fs.readdirSync(transactionFolderPath);
-        return files.map((file) => readTransactionFile(file.replace(".json", ""))).filter(Boolean);
+        const files = await fs.readdir(transactionFolderPath);
+        const transactions = await Promise.all(files.map(file => readTransactionFile(file.replace(".json", ""))));
+        return transactions.filter(Boolean);
     } catch (error) {
         throw { code: "failedToListTransactions", message: error.message };
     }
 }
 
-// Export funkcí pro použití v dalších částech aplikace
+ensureFolderExists();
+
 module.exports = {
     create,
     get,

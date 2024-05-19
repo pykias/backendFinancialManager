@@ -2,13 +2,11 @@ const transactionDao = require("../../dao/transaction-dao");
 
 async function ListTransactionAbl(req, res) {
   try {
-    console.log("Received request for /transactions/list");
+    console.log("Received request for /transaction/list");
 
-    // Načíst všechny transakce
-    const transactionList =  transactionDao.list();
+    const transactionList = await transactionDao.list();
 
-    // Ověřit, zda seznam transakcí není prázdný
-    if (!transactionList || transactionList.length === 0) {
+    if (!transactionList.length) {
       console.log("No transactionList found");
       return res.status(404).json({ message: "No transactionList found" });
     }
