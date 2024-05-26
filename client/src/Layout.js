@@ -1,11 +1,11 @@
 import { Outlet } from "react-router-dom";
-import Navbar from "./Navbar.js";
+import NavBar from "./Navbar.js";
 
 const Layout = () => {
     return (
         <>
             <div style={headerStyle()} className="shadow-lg">
-                <Navbar />
+                <NavBar />
             </div>
             <div style={bodyStyle()} className="rounded shadow-sm">
                 <Outlet />
@@ -32,7 +32,7 @@ function bodyStyle() {
         overflow: "auto",
         padding: "24px",
         flex: "1",
-        backgroundColor: "#f9f9f9",  // Světle neutrální pozadí
+        backgroundColor: "#f9f9f9",  // Light neutral background
         borderTop: "2px solid #ccc",
         borderBottom: "2px solid #ccc"
     };

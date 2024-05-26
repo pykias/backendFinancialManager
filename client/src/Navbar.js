@@ -22,17 +22,22 @@ function NavBar() {
                         Finanční Aplikace
                     </Button>
                 </Navbar.Brand>
-                <Nav>
-                    <Nav.Link onClick={() => navigate("/")}>Transakce</Nav.Link> {/* Přidáno */}
-                    <Nav.Link onClick={() => navigate("/financialOverview")}>Finanční Přehled</Nav.Link> {/* Přidáno */}
-                    <NavDropdown
-                        title={loggedInUser ? loggedInUser.name : "Login"}
-                        drop={"start"}
-                        style={dropdownStyle()}
-                    >
-                        {getUserMenuList({ userList, loggedInUser, handlerMap })}
-                    </NavDropdown>
-                </Nav>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="me-auto">
+                        <Nav.Link style={navLinkStyle()} onClick={() => navigate("/")}>Transakce</Nav.Link>
+                        <Nav.Link style={navLinkStyle()} onClick={() => navigate("/financialOverview")}>Finanční Přehled</Nav.Link>
+                    </Nav>
+                    <Nav>
+                        <NavDropdown
+                            title={loggedInUser ? loggedInUser.name : "Login"}
+                            align="end"
+                            style={dropdownStyle()}
+                        >
+                            {getUserMenuList({ userList, loggedInUser, handlerMap })}
+                        </NavDropdown>
+                    </Nav>
+                </Navbar.Collapse>
             </Container>
         </Navbar>
     );
@@ -40,7 +45,7 @@ function NavBar() {
 
 function componentStyle() {
     return {
-        backgroundColor: "linear-gradient(90deg, #007bff, #5a67d8)",
+        backgroundColor: "#e0f7fa",  // Light cyan background
         padding: "8px",
         borderRadius: "8px",
     };
@@ -55,7 +60,15 @@ function brandStyle() {
         fontWeight: "bold",
         padding: "8px",
         borderRadius: "4px",
-        backgroundColor: "#343a40",
+        backgroundColor: "#0277bd",  // Nice blue shade
+    };
+}
+
+function navLinkStyle() {
+    return {
+        marginRight: "20px",
+        color: "#0277bd",
+        fontWeight: "bold"
     };
 }
 

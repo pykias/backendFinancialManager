@@ -1,0 +1,46 @@
+.minimalist-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    transition: box-shadow 0.3s ease;
+}
+
+.minimalist-card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.minimalist-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.minimalist-card-date {
+    font-size: 14px;
+    color: #888;
+}
+
+.minimalist-card-name {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.minimalist-card-amount {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+.minimalist-card-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.minimalist-button-action {
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+}

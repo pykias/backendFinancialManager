@@ -4,6 +4,10 @@ import { UserContext } from "./UserContext";
 import TransactionCard from "./TransactionCard";
 import TransactionForm from "./TransactionForm";
 import Button from "react-bootstrap/Button";
+import Container from "react-bootstrap/Container";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
+import './TransactionList.css'; // Import the CSS file
 
 function TransactionList() {
     const { transactionList, handlerMap } = useContext(TransactionListContext);
@@ -11,21 +15,27 @@ function TransactionList() {
     const [showTransactionForm, setShowTransactionForm] = useState(null);
 
     return (
-        <div>
-            <h2>Transakce</h2>
+        <Container className="minimalist-container">
+            <h2 className="minimalist-title">Transakce</h2>
             {loggedInUser && (
-                <Button onClick={() => setShowTransactionForm({})} style={{ marginBottom: "15px" }}>
+                <Button
+                    variant="primary"
+                    onClick={() => setShowTransactionForm({})}
+                    className="minimalist-button"
+                >
                     Nová transakce
                 </Button>
             )}
-            {transactionList.map((transaction) => (
-                <TransactionCard
-                    key={transaction.id}
-                    transaction={transaction}
-                    setShowTransactionForm={setShowTransactionForm}
-                    onDelete={handlerMap.handleDelete}
-                />
-            ))}
+            <Row>
+                {transactionList.map((transaction) => (
+                    <Col key={transaction.id} xs={12} sm={6} md={4} lg={3} className="mb-3">
+                        <TransactionCard
+                            transaction={transaction}
+                            setShowTransactionForm={setShowTransactionForm}
+                        />
+                    </Col>
+                ))}
+            </Row>
             {showTransactionForm && (
                 <TransactionForm
                     transaction={showTransactionForm}
@@ -40,7 +50,7 @@ function TransactionList() {
                     }}
                 />
             )}
-        </div>
+        </Container>
     );
 }
 

@@ -6,47 +6,47 @@ import Form from "react-bootstrap/Form";
 function TransactionForm({ transaction, onHide, onSave }) {
     const { handlerMap } = useContext(TransactionListContext);
     const [formData, setFormData] = useState({
-        date: transaction?.date || "",
-        name: transaction?.name || "",
-        amount: transaction?.amount || "",
-        type: transaction?.type || "income",
+        date: "",
+        name: "",
+        amount: "",
+        type: "income"
     });
 
     useEffect(() => {
-        console.log("formData", formData); // Debugging: Check formData state
-    }, [formData]);
+        if (transaction) {
+            setFormData({
+                date: transaction.date ? new Date(transaction.date).toISOString().slice(0, 16) : "",
+                name: transaction.name || "",
+                amount: transaction.amount || "",
+                type: transaction.type || "income"
+            });
+        }
+    }, [transaction]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const { date, name, amount, type } = formData;
 
-        // Debugging: Check which fields are missing
-        if (!date) console.error("Date is missing");
-        if (!name) console.error("Name is missing");
-        if (!amount) console.error("Amount is missing");
-        if (!type) console.error("Type is missing");
-
-        // Ensure required fields are present
-        if (!date || !name || !amount || !type) {
-            console.error("Missing required fields");
+        if (!formData.date || !formData.name || !formData.amount || !formData.type) {
+            console.error("Missing required fields", formData);
             return;
         }
 
-        // Ensure date is in the correct format
-        const formattedDate = new Date(date).toISOString();
-        const submissionData = { ...formData, date: formattedDate };
+        const adjustedFormData = {
+            ...formData,
+            date: new Date(formData.date).toISOString()
+        };
 
         if (transaction && transaction.id) {
-            await handlerMap.handleUpdate({ ...submissionData, id: transaction.id });
+            await handlerMap.handleUpdate({ ...adjustedFormData, id: transaction.id });
         } else {
-            await handlerMap.handleCreate(submissionData);
+            await handlerMap.handleCreate(adjustedFormData);
         }
         onHide();
     };
 
     return (
-        <Form onSubmit={handleSubmit}>
-            <Form.Group controlId="formDate">
+        <Form onSubmit={handleSubmit} style={formStyle()}>
+            <Form.Group controlId="formDate" style={formGroupStyle()}>
                 <Form.Label>Date</Form.Label>
                 <Form.Control
                     type="datetime-local"
@@ -55,7 +55,7 @@ function TransactionForm({ transaction, onHide, onSave }) {
                     required
                 />
             </Form.Group>
-            <Form.Group controlId="formName">
+            <Form.Group controlId="formName" style={formGroupStyle()}>
                 <Form.Label>Name</Form.Label>
                 <Form.Control
                     type="text"
@@ -64,16 +64,16 @@ function TransactionForm({ transaction, onHide, onSave }) {
                     required
                 />
             </Form.Group>
-            <Form.Group controlId="formAmount">
+            <Form.Group controlId="formAmount" style={formGroupStyle()}>
                 <Form.Label>Amount</Form.Label>
                 <Form.Control
                     type="number"
                     value={formData.amount}
-                    onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
+                    onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) || "" })}
                     required
                 />
             </Form.Group>
-            <Form.Group controlId="formType">
+            <Form.Group controlId="formType" style={formGroupStyle()}>
                 <Form.Label>Type</Form.Label>
                 <Form.Control
                     as="select"
@@ -85,14 +85,38 @@ function TransactionForm({ transaction, onHide, onSave }) {
                     <option value="expense">Expense</option>
                 </Form.Control>
             </Form.Group>
-            <Button variant="primary" type="submit">
-                Save
-            </Button>
-            <Button variant="secondary" onClick={onHide} style={{ marginLeft: "10px" }}>
-                Cancel
-            </Button>
+            <div style={buttonGroupStyle()}>
+                <Button variant="primary" type="submit">
+                    Save
+                </Button>
+                <Button variant="secondary" onClick={onHide}>
+                    Cancel
+                </Button>
+            </div>
         </Form>
     );
+}
+
+function formStyle() {
+    return {
+        padding: "20px",
+        borderRadius: "8px",
+        backgroundColor: "#fff",
+        boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)"
+    };
+}
+
+function formGroupStyle() {
+    return {
+        marginBottom: "16px"
+    };
+}
+
+function buttonGroupStyle() {
+    return {
+        display: "flex",
+        justifyContent: "space-between"
+    };
 }
 
 export default TransactionForm;

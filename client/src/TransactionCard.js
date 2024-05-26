@@ -2,42 +2,44 @@ import React from "react";
 import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { format } from "date-fns";
+import './TransactionCard.css'; // Import the CSS file
 
 function TransactionCard({ transaction, setShowTransactionForm, onDelete }) {
     const isIncome = transaction.type === "income";
     const cardStyle = {
-        marginBottom: "15px",
         borderLeft: `5px solid ${isIncome ? "green" : "red"}`,
     };
 
     return (
-        <Card style={cardStyle}>
+        <Card style={cardStyle} className="minimalist-card">
             <Card.Body>
-                <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <div className="minimalist-card-header">
                     <div>
-                        <div style={{ fontSize: "20px" }}>
+                        <div className="minimalist-card-date">
                             {format(new Date(transaction.date), "d MMM yyyy HH:mm")}
                         </div>
-                        <div style={{ fontSize: "30px" }}>{transaction.name}</div>
+                        <div className="minimalist-card-name">{transaction.name}</div>
                     </div>
-                    <div style={{ fontSize: "30px" }}>
+                    <div className="minimalist-card-amount">
                         {transaction.amount.toLocaleString("cs-CZ", {
                             style: "currency",
                             currency: "CZK",
                         })}
                     </div>
                 </div>
-                <div style={{ marginTop: "15px" }}>
+                <div className="minimalist-card-actions">
                     <Button
                         variant="primary"
                         onClick={() => setShowTransactionForm(transaction)}
+                        className="minimalist-button-action"
                     >
                         Upravit
                     </Button>
                     <Button
                         variant="danger"
                         style={{ marginLeft: "10px" }}
-                        onClick={() => onDelete(transaction.id)} // Use the onDelete prop here
+                        onClick={() => onDelete(transaction.id)}
+                        className="minimalist-button-action"
                     >
                         Smazat
                     </Button>
