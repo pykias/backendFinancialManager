@@ -3,21 +3,21 @@ const ajv = new Ajv();
 
 const userDao = require("../../dao/user-dao.js");
 const transactionDao = require("../../dao/transaction-dao.js");
+const attendanceDao = require("../../dao/attendance-dao.js");
 
 const schema = {
     type: "object",
     properties: {
-        userId: { type: "string", minLength: 32, maxLength: 32 },
         transactionId: { type: "string", minLength: 32, maxLength: 32 },
-        amount: { type: "number" },
-        date: { type: "string", format: "date-time" },
-        note: { type: "string", maxLength: 255, nullable: true }
+        userId: { type: "string", minLength: 32, maxLength: 32 },
+        attendance: { enum: ["yes", "no", null] },
+        guests: { enum: [0, 1, 2, 3, 4, 5, 6] },
     },
-    required: ["userId", "transactionId", "amount", "date",],
+    required: ["transactionId", "userId"],
     additionalProperties: false,
 };
 
-async function UpdateTransactionAbl(req, res) {
+async function UpdateAbl(req, res) {
     try {
         let dtoIn = req.body;
 
@@ -26,39 +26,44 @@ async function UpdateTransactionAbl(req, res) {
         if (!valid) {
             res.status(400).json({
                 code: "dtoInIsNotValid",
-                message: "Input data format is not valid",
+                message: "dtoIn is not valid",
                 validationError: ajv.errors,
             });
             return;
         }
 
         // check if user exists
-        const user = await userDao.get(dtoIn.userId);
+        const user = userDao.get(dtoIn.userId);
         if (!user) {
             res.status(404).json({
                 code: "userNotFound",
-                message: `User with id ${dtoIn.userId} not found`,
+                message: `User ${dtoIn.userId} not found`,
             });
             return;
         }
 
-        // check if transactionList exists
-        const transaction = await transactionDao.get(dtoIn.transactionId);
+        // check if transaction exists
+        const transaction = transactionDao.get(dtoIn.transactionId);
         if (!transaction) {
             res.status(404).json({
                 code: "transactionNotFound",
-                message: `Transaction with id ${dtoIn.transactionId} not found`,
+                message: `Transaction ${dtoIn.transactionId} not found`,
             });
             return;
         }
 
-        // Assuming transactionDao.update is a function that updates a transactionList
-        const updatedTransaction = await transactionDao.update(dtoIn.transactionId, dtoIn);
+        let attendance = attendanceDao.get(dtoIn.userId, dtoIn.transactionId);
+        attendance = { ...(attendance || {}), ...dtoIn };
 
-        res.json(updatedTransaction);
+        if (!attendance.attendance && !attendance.guests) {
+            attendanceDao.remove(attendance.userId, attendance.transactionId);
+        } else {
+            attendance = attendanceDao.update(attendance);
+        }
+        res.json(attendance);
     } catch (e) {
         res.status(500).json({ message: e.message });
     }
 }
 
-module.exports = UpdateTransactionAbl;
+module.exports = UpdateAbl;

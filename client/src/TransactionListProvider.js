@@ -116,11 +116,11 @@ function TransactionListProvider({ children }) {
         }
     };
 
-    const value = {
+    const value = useMemo(() => ({
         state: transactionLoadObject.state,
         transactionList: transactionLoadObject.data || [],
         handlerMap: { handleCreate, handleUpdate, handleDelete },
-    };
+    }), [transactionLoadObject]);
 
     return (
         <TransactionListContext.Provider value={value}>

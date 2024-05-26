@@ -3,7 +3,7 @@ import Card from "react-bootstrap/Card";
 import Button from "react-bootstrap/Button";
 import { format } from "date-fns";
 
-function TransactionCard({ transaction, setShowTransactionForm }) {
+function TransactionCard({ transaction, setShowTransactionForm, onDelete }) {
     return (
         <Card style={{ marginBottom: "15px" }}>
             <Card.Body>
@@ -28,7 +28,11 @@ function TransactionCard({ transaction, setShowTransactionForm }) {
                     >
                         Upravit
                     </Button>
-                    <Button variant="danger" style={{ marginLeft: "10px" }}>
+                    <Button
+                        variant="danger"
+                        style={{ marginLeft: "10px" }}
+                        onClick={() => onDelete(transaction.id)}
+                    >
                         Smazat
                     </Button>
                 </div>
