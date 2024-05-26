@@ -4,9 +4,6 @@ import { UserContext } from "./UserContext";
 import TransactionCard from "./TransactionCard";
 import TransactionForm from "./TransactionForm";
 import Button from "react-bootstrap/Button";
-import Container from "react-bootstrap/Container";
-import Icon from "@mdi/react";
-import { mdiPlusBoxOutline } from "@mdi/js";
 
 function TransactionList() {
     const { transactionList, handlerMap } = useContext(TransactionListContext);
@@ -14,15 +11,13 @@ function TransactionList() {
     const [showTransactionForm, setShowTransactionForm] = useState(null);
 
     return (
-        <Container>
-            <div style={{ display: "flex", justifyContent: "flex-end", gap: "8px" }}>
-                {loggedInUser && (
-                    <Button variant="primary" onClick={() => setShowTransactionForm({})}>
-                        <Icon path={mdiPlusBoxOutline} size={1} color={"white"} /> Nová transakce
-                    </Button>
-                )}
-            </div>
+        <div>
             <h2>Transakce</h2>
+            {loggedInUser && (
+                <Button onClick={() => setShowTransactionForm({})} style={{ marginBottom: "15px" }}>
+                    Nová transakce
+                </Button>
+            )}
             {transactionList.map((transaction) => (
                 <TransactionCard
                     key={transaction.id}
@@ -45,7 +40,7 @@ function TransactionList() {
                     }}
                 />
             )}
-        </Container>
+        </div>
     );
 }
 

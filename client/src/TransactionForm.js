@@ -1,146 +1,98 @@
-import { useContext, useState } from "react";
-import { TransactionListContext } from "./TransactionListContext.js";
-
-import Modal from "react-bootstrap/Modal";
+import React, { useState, useContext, useEffect } from "react";
+import { TransactionListContext } from "./TransactionListContext";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import Alert from "react-bootstrap/Alert";
 
-import Icon from "@mdi/react";
-import { mdiLoading } from "@mdi/js";
+function TransactionForm({ transaction, onHide, onSave }) {
+    const { handlerMap } = useContext(TransactionListContext);
+    const [formData, setFormData] = useState({
+        date: transaction?.date || "",
+        name: transaction?.name || "",
+        amount: transaction?.amount || "",
+        type: transaction?.type || "income",
+    });
 
-function TransactionForm({ setShowTransactionForm, transaction }) {
-    const { state, handlerMap } = useContext(TransactionListContext);
-    const [showAlert, setShowAlert] = useState(null);
-    const isPending = state === "pending";
+    useEffect(() => {
+        console.log("formData", formData); // Debugging: Check formData state
+    }, [formData]);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        const { date, name, amount, type } = formData;
+
+        // Debugging: Check which fields are missing
+        if (!date) console.error("Date is missing");
+        if (!name) console.error("Name is missing");
+        if (!amount) console.error("Amount is missing");
+        if (!type) console.error("Type is missing");
+
+        // Ensure required fields are present
+        if (!date || !name || !amount || !type) {
+            console.error("Missing required fields");
+            return;
+        }
+
+        // Ensure date is in the correct format
+        const formattedDate = new Date(date).toISOString();
+        const submissionData = { ...formData, date: formattedDate };
+
+        if (transaction && transaction.id) {
+            await handlerMap.handleUpdate({ ...submissionData, id: transaction.id });
+        } else {
+            await handlerMap.handleCreate(submissionData);
+        }
+        onHide();
+    };
 
     return (
-        <Modal
-            show={true}
-            onHide={() => setShowTransactionForm(false)}
-            centered
-        >
-            <Form
-                onSubmit={async (e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    const formData = Object.fromEntries(new FormData(e.target));
-                    formData.amount = parseFloat(formData.amount); // Ensure amount is a number
-                    formData.date = new Date(formData.date).toISOString();
-                    try {
-                        if (transaction.id) {
-                            formData.id = transaction.id;
-                            await handlerMap.handleUpdate(formData);
-                        } else {
-                            await handlerMap.handleCreate(formData);
-                        }
-
-                        setShowTransactionForm(false);
-                    } catch (e) {
-                        console.error(e);
-                        setShowAlert(e.message);
-                    }
-                }}
-            >
-                <Modal.Header>
-                    <Modal.Title>{`${transaction.id ? "Upravit" : "Vytvořit"} transakci`}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body style={{ position: "relative" }}>
-                    <Alert
-                        show={!!showAlert}
-                        variant="danger"
-                        dismissible
-                        onClose={() => setShowAlert(null)}
-                    >
-                        <Alert.Heading>Nepodařilo se vytvořit transakci</Alert.Heading>
-                        <pre>{showAlert}</pre>
-                    </Alert>
-
-                    {isPending ? (
-                        <div style={pendingStyle()}>
-                            <Icon path={mdiLoading} size={2} spin />
-                        </div>
-                    ) : null}
-
-                    <Form.Group className="mb-3">
-                        <Form.Label>Datum transakce</Form.Label>
-                        <Form.Control
-                            type="datetime-local"
-                            name="date"
-                            required
-                            defaultValue={
-                                transaction.date ? transactionDateToInput(transaction.date) : undefined
-                            }
-                        />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Název transakce</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="name"
-                            required
-                            minLength={3}
-                            defaultValue={transaction.name}
-                        />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Částka</Form.Label>
-                        <Form.Control
-                            type="number"
-                            name="amount"
-                            required
-                            defaultValue={transaction.amount}
-                        />
-                    </Form.Group>
-                    <Form.Group className="mb-3">
-                        <Form.Label>Typ transakce</Form.Label>
-                        <Form.Select name="type" required defaultValue={transaction.type || ""}>
-                            <option value="">Vyberte typ...</option>
-                            <option value="income">Příjem</option>
-                            <option value="expense">Výdaj</option>
-                        </Form.Select>
-                    </Form.Group>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button
-                        variant="secondary"
-                        onClick={() => setShowTransactionForm(false)}
-                        disabled={isPending}
-                    >
-                        Zavřít
-                    </Button>
-                    <Button type="submit" variant="primary" disabled={isPending}>
-                        {transaction.id ? "Upravit" : "Vytvořit"}
-                    </Button>
-                </Modal.Footer>
-            </Form>
-        </Modal>
+        <Form onSubmit={handleSubmit}>
+            <Form.Group controlId="formDate">
+                <Form.Label>Date</Form.Label>
+                <Form.Control
+                    type="datetime-local"
+                    value={formData.date}
+                    onChange={(e) => setFormData({ ...formData, date: e.target.value })}
+                    required
+                />
+            </Form.Group>
+            <Form.Group controlId="formName">
+                <Form.Label>Name</Form.Label>
+                <Form.Control
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    required
+                />
+            </Form.Group>
+            <Form.Group controlId="formAmount">
+                <Form.Label>Amount</Form.Label>
+                <Form.Control
+                    type="number"
+                    value={formData.amount}
+                    onChange={(e) => setFormData({ ...formData, amount: parseFloat(e.target.value) })}
+                    required
+                />
+            </Form.Group>
+            <Form.Group controlId="formType">
+                <Form.Label>Type</Form.Label>
+                <Form.Control
+                    as="select"
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    required
+                >
+                    <option value="income">Income</option>
+                    <option value="expense">Expense</option>
+                </Form.Control>
+            </Form.Group>
+            <Button variant="primary" type="submit">
+                Save
+            </Button>
+            <Button variant="secondary" onClick={onHide} style={{ marginLeft: "10px" }}>
+                Cancel
+            </Button>
+        </Form>
     );
-}
-
-function pendingStyle() {
-    return {
-        position: "absolute",
-        top: "0",
-        right: "0",
-        bottom: "0",
-        left: "0",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "white",
-        opacity: "0.5",
-    };
-}
-
-function transactionDateToInput(date) {
-    date = new Date(date);
-    const year = date.getFullYear();
-    const month = (date.getMonth() + 1).toString().padStart(2, "0");
-    const day = date.getDate().toString().padStart(2, "0");
-    const hours = date.getHours().toString().padStart(2, "0");
-    const minutes = date.getMinutes().toString().padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
 export default TransactionForm;

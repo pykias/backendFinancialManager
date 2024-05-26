@@ -37,7 +37,7 @@ function TransactionCard({ transaction, setShowTransactionForm, onDelete }) {
                     <Button
                         variant="danger"
                         style={{ marginLeft: "10px" }}
-                        onClick={() => onDelete(transaction.id)}
+                        onClick={() => onDelete(transaction.id)} // Use the onDelete prop here
                     >
                         Smazat
                     </Button>
