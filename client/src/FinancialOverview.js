@@ -1,33 +1,28 @@
-// src/FinancialOverview.js
-import React, { useState, useEffect } from "react";
-import Container from "react-bootstrap/Container";
+import React, { useContext } from "react";
+import { TransactionListContext } from "./TransactionListContext";
 
 function FinancialOverview() {
-    const [overview, setOverview] = useState({ totalTransactions: 0, totalAmount: 0 });
+    const { transactionList } = useContext(TransactionListContext);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch("http://localhost:8000/financialoverview");
-                const data = await response.json();
-                setOverview(data);
-            } catch (error) {
-                console.error("Error fetching financial overview:", error);
-            }
-        };
+    const totalIncome = transactionList
+        .filter(transaction => transaction.type === "income")
+        .reduce((sum, transaction) => sum + transaction.amount, 0);
 
-        fetchData();
-    }, []);
+    const totalExpense = transactionList
+        .filter(transaction => transaction.type === "expense")
+        .reduce((sum, transaction) => sum + transaction.amount, 0);
+
+    const totalBalance = totalIncome - totalExpense;
 
     return (
-        <Container>
-            <h1>Financial Overview</h1>
-            <p>Total Transactions: {overview.totalTransactions}</p>
-            <p>Total Amount: {overview.totalAmount.toLocaleString("cs-CZ", {
-                style: "currency",
-                currency: "CZK",
-            })}</p>
-        </Container>
+        <div>
+            <h2>Financial Overview</h2>
+            <div>
+                <p>Total Income: {totalIncome.toLocaleString("cs-CZ", { style: "currency", currency: "CZK" })}</p>
+                <p>Total Expense: {totalExpense.toLocaleString("cs-CZ", { style: "currency", currency: "CZK" })}</p>
+                <p>Total Balance: {totalBalance.toLocaleString("cs-CZ", { style: "currency", currency: "CZK" })}</p>
+            </div>
+        </div>
     );
 }
 

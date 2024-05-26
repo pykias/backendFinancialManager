@@ -10,7 +10,7 @@ function TransactionListProvider({ children }) {
 
     useEffect(() => {
         handleLoad();
-    }, []); //
+    }, []);
 
     const handleLoad = async () => {
         setTransactionLoadObject((current) => ({ ...current, state: "pending" }));

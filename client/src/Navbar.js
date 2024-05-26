@@ -23,6 +23,8 @@ function NavBar() {
                     </Button>
                 </Navbar.Brand>
                 <Nav>
+                    <Nav.Link onClick={() => navigate("/")}>Transakce</Nav.Link> {/* Přidáno */}
+                    <Nav.Link onClick={() => navigate("/financialOverview")}>Finanční Přehled</Nav.Link> {/* Přidáno */}
                     <NavDropdown
                         title={loggedInUser ? loggedInUser.name : "Login"}
                         drop={"start"}

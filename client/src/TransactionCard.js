@@ -4,8 +4,14 @@ import Button from "react-bootstrap/Button";
 import { format } from "date-fns";
 
 function TransactionCard({ transaction, setShowTransactionForm, onDelete }) {
+    const isIncome = transaction.type === "income";
+    const cardStyle = {
+        marginBottom: "15px",
+        borderLeft: `5px solid ${isIncome ? "green" : "red"}`,
+    };
+
     return (
-        <Card style={{ marginBottom: "15px" }}>
+        <Card style={cardStyle}>
             <Card.Body>
                 <div style={{ display: "flex", justifyContent: "space-between" }}>
                     <div>
