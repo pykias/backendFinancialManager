@@ -4,10 +4,32 @@ import Button from "react-bootstrap/Button";
 import { format } from "date-fns";
 import './TransactionCard.css'; // Import the CSS file
 
-function TransactionCard({ transaction, setShowTransactionForm, onDelete }) {
+function TransactionCard({ transaction, setShowTransactionForm }) {
     const isIncome = transaction.type === "income";
     const cardStyle = {
         borderLeft: `5px solid ${isIncome ? "green" : "red"}`,
+    };
+
+    const handleDelete = async (transactionId) => {
+        const confirmed = window.confirm("Opravdu chcete tuto transakci smazat?");
+        if (!confirmed) return;
+
+        try {
+            const response = await fetch(`http://localhost:8000/transaction/delete`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ id: transactionId }),
+            });
+            if (response.ok) {
+                setShowTransactionForm(null); // Hide the form after deletion
+                window.location.reload(); // Reload the page to reflect changes
+            } else {
+                const responseJson = await response.json();
+                throw new Error(responseJson.message);
+            }
+        } catch (error) {
+            console.error("Error deleting transaction:", error.message);
+        }
     };
 
     return (
@@ -38,7 +60,7 @@ function TransactionCard({ transaction, setShowTransactionForm, onDelete }) {
                     <Button
                         variant="danger"
                         style={{ marginLeft: "10px" }}
-                        onClick={() => onDelete(transaction.id)}
+                        onClick={() => handleDelete(transaction.id)}
                         className="minimalist-button-action"
                     >
                         Smazat
