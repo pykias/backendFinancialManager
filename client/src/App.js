@@ -2,11 +2,11 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
 import TransactionList from "./TransactionList";
 import FinancialOverview from "./FinancialOverview";
-import UserList from "./UserList";  // Import UserList
-import UserProvider from "./UserProvider";
+import {UserProvider} from "./UserProvider";
 import TransactionListProvider from "./TransactionListProvider";
 import TransactionProvider from "./TransactionProvider";
 import TransactionRoute from "./TransactionRoute";
+import UserList from "./UserList"; // Import UserList
 
 function App() {
     return (
@@ -18,7 +18,7 @@ function App() {
                             <Route path="/" element={<Layout />}>
                                 <Route index element={<TransactionList />} />
                                 <Route path="financialOverview" element={<FinancialOverview />} />
-                                <Route path="users" element={<UserList />} />  {/* Add this line */}
+                                <Route path="users" element={<UserList />} /> {/* Add this line */}
                                 <Route
                                     path="eventDetail"
                                     element={

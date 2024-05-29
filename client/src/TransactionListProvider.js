@@ -8,10 +8,9 @@ function TransactionListProvider({ children }) {
         data: [],
     });
 
-    // Load transactions when the component mounts
     useEffect(() => {
         handleLoad();
-    }, []); // Empty dependency array ensures this runs only once
+    }, []);
 
     const handleLoad = async () => {
         try {
@@ -21,7 +20,7 @@ function TransactionListProvider({ children }) {
             });
             if (response.ok) {
                 const responseJson = await response.json();
-                setTransactionLoadObject({ state: "ready", data: responseJson });
+                setTransactionLoadObject({ state: "ready", data: Array.isArray(responseJson) ? responseJson : [] });
             } else {
                 const errorResponse = await response.json();
                 setTransactionLoadObject((current) => ({

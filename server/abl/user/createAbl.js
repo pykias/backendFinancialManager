@@ -1,9 +1,10 @@
+const userDao = require("../../dao/user-dao");
+const bcrypt = require("bcrypt");
+
 const Ajv = require("ajv");
 const addFormats = require("ajv-formats").default;
 const ajv = new Ajv();
 addFormats(ajv);
-
-const userDao = require("../../dao/user-dao.js");
 
 // Schéma pro ověření vstupu uživatele
 const schema = {
@@ -40,7 +41,7 @@ async function CreateAbl(req, res) {
             });
         }
 
-        user.password = await hashPassword(user.password);
+        user.password = await bcrypt.hash(user.password, 10);
 
         // Vytvoření uživatele
         const createdUser = await userDao.create(user);
@@ -48,13 +49,6 @@ async function CreateAbl(req, res) {
     } catch (e) {
         res.status(500).json({ message: e.message });
     }
-}
-
-// Pomocná funkce pro hashování hesla
-async function hashPassword(password) {
-    const saltRounds = 10;
-    // return bcrypt.hash(password, saltRounds);
-    return password; // Odstranit pokud přidam hashování přes bcrypt
 }
 
 module.exports = CreateAbl;

@@ -1,37 +1,62 @@
-const users = []; // This should be replaced by actual database logic
+const fs = require('fs');
+const path = require('path');
+
+const userListPath = path.join(__dirname, '../storage/userList');
+
+// Ensure userList directory exists
+if (!fs.existsSync(userListPath)) {
+    fs.mkdirSync(userListPath, { recursive: true });
+}
 
 const findByEmail = async (email) => {
-    return users.find(user => user.email === email);
+    const filePath = path.join(userListPath, `${email}.json`);
+    if (fs.existsSync(filePath)) {
+        const userData = fs.readFileSync(filePath);
+        return JSON.parse(userData);
+    }
+    return null;
 };
 
 const create = async (user) => {
-    user.id = users.length + 1;
-    users.push(user);
+    const filePath = path.join(userListPath, `${user.email}.json`);
+    user.id = Date.now(); // Assign a unique ID based on timestamp
+    fs.writeFileSync(filePath, JSON.stringify(user, null, 2));
     return user;
 };
 
 const get = async (id) => {
-    return users.find(user => user.id === id);
+    const files = fs.readdirSync(userListPath);
+    for (const file of files) {
+        const user = JSON.parse(fs.readFileSync(path.join(userListPath, file)));
+        if (user.id.toString() === id.toString()) {
+            return user;
+        }
+    }
+    return null;
 };
 
 const list = async () => {
-    return users;
+    const files = fs.readdirSync(userListPath);
+    return files.map(file => JSON.parse(fs.readFileSync(path.join(userListPath, file))));
 };
 
 const update = async (updatedUser) => {
-    const index = users.findIndex(user => user.id === updatedUser.id);
-    if (index !== -1) {
-        users[index] = { ...users[index], ...updatedUser };
-        return users[index];
+    const filePath = path.join(userListPath, `${updatedUser.email}.json`);
+    if (fs.existsSync(filePath)) {
+        fs.writeFileSync(filePath, JSON.stringify(updatedUser, null, 2));
+        return updatedUser;
     }
     return null;
 };
 
 const remove = async (id) => {
-    const index = users.findIndex(user => user.id === id);
-    if (index !== -1) {
-        users.splice(index, 1);
-        return true;
+    const files = fs.readdirSync(userListPath);
+    for (const file of files) {
+        const user = JSON.parse(fs.readFileSync(path.join(userListPath, file)));
+        if (user.id.toString() === id.toString()) {
+            fs.unlinkSync(path.join(userListPath, file));
+            return true;
+        }
     }
     return false;
 };

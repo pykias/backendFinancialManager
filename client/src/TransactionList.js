@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { TransactionListContext } from "./TransactionListContext";
-import { UserContext } from "./UserContext";
+import { UserContext } from "./UserProvider";
 import TransactionCard from "./TransactionCard";
 import TransactionForm from "./TransactionForm";
 import Button from "react-bootstrap/Button";

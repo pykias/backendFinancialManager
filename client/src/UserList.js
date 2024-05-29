@@ -1,15 +1,19 @@
-import React, { useState, useContext } from "react";
-import { UserContext } from "./UserProvider";
-import { Form, Button } from "react-bootstrap";
+import React, { useState, useContext } from 'react';
+import { UserContext } from './UserProvider';
+import { Form, Button } from 'react-bootstrap';
 
 function UserList() {
-    const { handlerMap } = useContext(UserContext);
-    const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+    const { userList, handlerMap } = useContext(UserContext);
+    const [formData, setFormData] = useState({ name: '', email: '', password: '' });
 
     const handleSubmit = async (event) => {
         event.preventDefault();
         await handlerMap.handleCreateUser(formData);
-        setFormData({ name: "", email: "", password: "" });
+        setFormData({ name: '', email: '', password: '' });
+    };
+
+    const handleDelete = async (userId) => {
+        await handlerMap.handleDeleteUser(userId);
     };
 
     return (
@@ -44,6 +48,17 @@ function UserList() {
                     Přidat uživatele
                 </Button>
             </Form>
+            <h3>Seznam uživatelů</h3>
+            <ul>
+                {userList.map(user => (
+                    <li key={user.id}>
+                        {user.name} - {user.email}
+                        <Button variant="danger" onClick={() => handleDelete(user.id)} style={{ marginLeft: '10px' }}>
+                            Odstranit
+                        </Button>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }
