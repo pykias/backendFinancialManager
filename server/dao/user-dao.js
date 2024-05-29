@@ -1,88 +1,46 @@
-const fs = require("fs");
-const path = require("path");
-const crypto = require("crypto");
-const bcrypt = require('bcrypt');
+const users = []; // This should be replaced by actual database logic
 
-const userFolderPath = path.join(__dirname, "storage", "userList");
+const findByEmail = async (email) => {
+    return users.find(user => user.email === email);
+};
 
-async function hashPassword(password) {
-    const saltRounds = 10;
-    return await bcrypt.hash(password, saltRounds);
-}
+const create = async (user) => {
+    user.id = users.length + 1;
+    users.push(user);
+    return user;
+};
 
-function get(userId) {
-    try {
-        const filePath = path.join(userFolderPath, `${userId}.json`);
-        const fileData = fs.readFileSync(filePath, "utf8");
-        return JSON.parse(fileData);
-    } catch (error) {
-        if (error.code === "ENOENT") return null;
-        throw { code: "failedToReadUser", message: error.message };
+const get = async (id) => {
+    return users.find(user => user.id === id);
+};
+
+const list = async () => {
+    return users;
+};
+
+const update = async (updatedUser) => {
+    const index = users.findIndex(user => user.id === updatedUser.id);
+    if (index !== -1) {
+        users[index] = { ...users[index], ...updatedUser };
+        return users[index];
     }
-}
+    return null;
+};
 
-async function create(user) {
-    try {
-        // Ensure the password is hashed before storing the user
-        if (user.password) {
-            user.password = await hashPassword(user.password);
-        }
-
-        user.id = crypto.randomBytes(16).toString("hex");
-        const filePath = path.join(userFolderPath, `${user.id}.json`);
-        const fileData = JSON.stringify(user);
-        fs.writeFileSync(filePath, fileData, "utf8");
-        return user;
-    } catch (error) {
-        throw { code: "failedToCreateUser", message: error.message };
+const remove = async (id) => {
+    const index = users.findIndex(user => user.id === id);
+    if (index !== -1) {
+        users.splice(index, 1);
+        return true;
     }
-}
-
-function update(user) {
-    try {
-        const currentUser = get(user.id);
-        if (!currentUser) return null;
-        // Do not update password here. Create separate function to update password.
-        const newUser = { ...currentUser, ...user };
-        const filePath = path.join(userFolderPath, `${user.id}.json`);
-        const fileData = JSON.stringify(newUser);
-        fs.writeFileSync(filePath, fileData, "utf8");
-        return newUser;
-    } catch (error) {
-        throw { code: "failedToUpdateUser", message: error.message };
-    }
-}
-
-function remove(userId) {
-    try {
-        const filePath = path.join(userFolderPath, `${userId}.json`);
-        fs.unlinkSync(filePath);
-        return {};
-    } catch (error) {
-        if (error.code === "ENOENT") {
-            return {};
-        }
-        throw { code: "failedToRemoveUser", message: error.message };
-    }
-}
-
-function list() {
-    try {
-        const files = fs.readdirSync(userFolderPath);
-        const userList = files.map((file) => {
-            const fileData = fs.readFileSync(path.join(userFolderPath, file), "utf8");
-            return JSON.parse(fileData);
-        });
-        return userList;
-    } catch (error) {
-        throw { code: "failedToListUsers", message: error.message };
-    }
-}
+    return false;
+};
 
 module.exports = {
-    get,
+    findByEmail,
     create,
+    get,
+    list,
     update,
     remove,
-    list,
 };

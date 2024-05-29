@@ -1,46 +1,92 @@
-import { useEffect, useState } from "react";
-import { UserContext } from "./UserContext";
+import React, { createContext, useState, useEffect, useMemo } from "react";
 
-function UserProvider({ children }) {
-    const [userListDto, setUserListDto] = useState({
+export const UserContext = createContext();
+
+const UserProvider = ({ children }) => {
+    const [userLoadObject, setUserLoadObject] = useState({
         state: "ready",
-        data: null,
+        error: null,
+        data: [],
     });
-    const [loggedInUser, setLoggedInUser] = useState(null);
 
-    // Fetch seznamu uživatelů při načtení komponenty
     useEffect(() => {
-        setUserListDto((current) => ({ ...current, state: "loading" }));
-        fetch(`http://localhost:8000/user/list`, {
-            method: "GET",
-        })
-            .then(async (response) => {
-                const responseJson = await response.json();
-                if (response.status >= 400) {
-                    setUserListDto({ state: "error", error: responseJson.error });
-                } else {
-                    setUserListDto({ state: "ready", data: responseJson });
-                }
-            })
-            .catch((error) => {
-                setUserListDto({ state: "error", error: error.message });
-            });
+        handleLoadUsers();
     }, []);
 
-    const value = {
-        userList: userListDto.data || [],
-        loggedInUser: loggedInUser
-            ? (userListDto.data || []).find((user) => user.id === loggedInUser)
-            : null,
-        handlerMap: {
-            login: setLoggedInUser,
-            logout: () => setLoggedInUser(null),
-        },
+    const handleLoadUsers = async () => {
+        try {
+            setUserLoadObject((current) => ({ ...current, state: "pending" }));
+            const response = await fetch(`http://localhost:8000/users/list`, {
+                method: "GET",
+            });
+            if (response.ok) {
+                const responseJson = await response.json();
+                setUserLoadObject({ state: "ready", data: responseJson });
+            } else {
+                const errorResponse = await response.json();
+                setUserLoadObject((current) => ({
+                    state: "error",
+                    data: current.data,
+                    error: errorResponse.message,
+                }));
+                console.error("Error loading users:", JSON.stringify(errorResponse, null, 2));
+            }
+        } catch (error) {
+            setUserLoadObject((current) => ({
+                state: "error",
+                data: current.data,
+                error: error.message,
+            }));
+            console.error("Error loading users:", error.message);
+        }
     };
 
+    const handleCreateUser = async (dtoIn) => {
+        try {
+            setUserLoadObject((current) => ({ ...current, state: "pending" }));
+            const response = await fetch(`http://localhost:8000/users/create`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(dtoIn),
+            });
+            if (response.ok) {
+                const responseJson = await response.json();
+                setUserLoadObject((current) => ({
+                    state: "ready",
+                    data: [...current.data, responseJson],
+                }));
+            } else {
+                const errorResponse = await response.json();
+                setUserLoadObject((current) => ({
+                    state: "error",
+                    data: current.data,
+                    error: errorResponse.message,
+                }));
+                console.error("Error creating user:", JSON.stringify(errorResponse, null, 2));
+            }
+        } catch (error) {
+            setUserLoadObject((current) => ({
+                state: "error",
+                data: current.data,
+                error: error.message,
+            }));
+            console.error("Error creating user:", error.message);
+        }
+    };
+
+    const value = useMemo(() => ({
+        state: userLoadObject.state,
+        userList: userLoadObject.data || [],
+        handlerMap: { handleCreateUser, handleLoadUsers },
+    }), [userLoadObject]);
+
     return (
-        <UserContext.Provider value={value}>{children}</UserContext.Provider>
+        <UserContext.Provider value={value}>
+            {children}
+        </UserContext.Provider>
     );
-}
+};
 
 export default UserProvider;

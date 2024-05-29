@@ -40,7 +40,6 @@ async function CreateAbl(req, res) {
             });
         }
 
-
         user.password = await hashPassword(user.password);
 
         // Vytvoření uživatele

@@ -1,16 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const createAbl = require("../abl/user/createAbl");
+const listAbl = require("../abl/user/listAbl");
+const deleteAbl = require("../abl/user/deleteAbl");
+const getAbl = require("../abl/user/getAbl");
+const updateAbl = require("../abl/user/updateAbl");
 
-const GetAbl = require("../abl/user/getAbl");
-const ListAbl = require("../abl/user/listAbl");
-const CreateAbl = require("../abl/user/createAbl");
-const UpdateAbl = require("../abl/user/updateAbl");
-const DeleteAbl = require("../abl/user/deleteAbl");
-
-router.get("/get", GetAbl);
-router.get("/list", ListAbl);
-router.post("/create", CreateAbl);
-router.post("/update", UpdateAbl);
-router.post("/delete", DeleteAbl);
+router.post("/create", createAbl);
+router.get("/list", listAbl);
+router.post("/delete", deleteAbl);
+router.get("/get", getAbl);
+router.post("/update", updateAbl);
 
 module.exports = router;

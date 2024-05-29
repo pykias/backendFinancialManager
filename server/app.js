@@ -1,31 +1,31 @@
 const express = require("express");
 const cors = require("cors");
 const app = express();
-const port = process.env.PORT || 8000; // Povolit konfiguraci portu prostřednictvím proměnných prostředí
+const port = process.env.PORT || 8000;
 
-// Importovat kontrolery
+// Import controllers
 const transactionController = require("./controller/transaction");
-const userController = require("./controller/user");
+const userController = require("./controller/user");  // Ensure this is correctly imported
 const attendanceController = require("./controller/attendance");
 
-// Middleware pro zpracování JSON a URL zakódovaných těl požadavků
+// Middleware for processing JSON and URL encoded request bodies
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Povolit CORS pro všechny požadavky
+// Enable CORS for all requests
 app.use(cors());
 
-// Základní endpoint
+// Basic endpoint
 app.get("/", (req, res) => {
     res.send("Welcome to the Financial Management App!");
 });
 
-// Definování cest pro jednotlivé kontrolery
+// Define routes for individual controllers
 app.use("/transaction", transactionController);
-app.use("/user", userController);
+app.use("/users", userController);  // Ensure this matches the path used in the frontend
 app.use("/attendance", attendanceController);
 
-// Spuštění serveru
+// Start the server
 app.listen(port, () => {
     console.log(`Financial Management App listening on port ${port}`);
 });

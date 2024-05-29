@@ -14,25 +14,27 @@ function NavBar() {
     const navigate = useNavigate();
 
     return (
-        <Navbar expand="lg" style={componentStyle()} className="shadow-sm">
+        <Navbar expand="lg" style={navbarStyle()} className="shadow-sm">
             <Container>
-                <Navbar.Brand>
-                    <Button style={brandStyle()} onClick={() => navigate("/")} className="shadow-lg">
-                        <Icon path={mdiBank} size={1.2} color={"white"} />
+                <Navbar.Brand style={{ display: "flex", alignItems: "center" }}>
+                    <Icon path={mdiBank} size={1.5} color="white" />
+                    <Button onClick={() => navigate("/")} style={brandButtonStyle()}>
                         Finanční Aplikace
                     </Button>
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                 <Navbar.Collapse id="basic-navbar-nav">
                     <Nav className="me-auto">
-                        <Nav.Link style={navLinkStyle()} onClick={() => navigate("/")}>Transakce</Nav.Link>
-                        <Nav.Link style={navLinkStyle()} onClick={() => navigate("/financialOverview")}>Finanční Přehled</Nav.Link>
+                        <Nav.Link onClick={() => navigate("/")} style={navLinkStyle()}>Transakce</Nav.Link>
+                        <Nav.Link onClick={() => navigate("/financialOverview")} style={navLinkStyle()}>Finanční Přehled</Nav.Link>
+                        <Nav.Link onClick={() => navigate("/users")} style={navLinkStyle()}>Uživatelé</Nav.Link>
                     </Nav>
                     <Nav>
                         <NavDropdown
                             title={loggedInUser ? loggedInUser.name : "Login"}
+                            id="basic-nav-dropdown"
                             align="end"
-                            style={dropdownStyle()}
+                            style={navDropdownStyle()}
                         >
                             {getUserMenuList({ userList, loggedInUser, handlerMap })}
                         </NavDropdown>
@@ -43,39 +45,35 @@ function NavBar() {
     );
 }
 
-function componentStyle() {
+function navbarStyle() {
     return {
-        backgroundColor: "#e0f7fa",  // Light cyan background
-        padding: "8px",
-        borderRadius: "8px",
+        backgroundColor: "#343a40",
+        padding: "10px 20px",
+        borderBottom: "2px solid #007bff",
     };
 }
 
-function brandStyle() {
+function brandButtonStyle() {
     return {
-        display: "flex",
-        alignItems: "center",
-        gap: "8px",
+        backgroundColor: "transparent",
+        border: "none",
         color: "white",
+        fontSize: "1.2em",
         fontWeight: "bold",
-        padding: "8px",
-        borderRadius: "4px",
-        backgroundColor: "#0277bd",  // Nice blue shade
+        marginLeft: "10px",
     };
 }
 
 function navLinkStyle() {
     return {
-        marginRight: "20px",
-        color: "#0277bd",
-        fontWeight: "bold"
+        color: "white",
+        marginRight: "15px",
     };
 }
 
-function dropdownStyle() {
+function navDropdownStyle() {
     return {
-        borderRadius: "4px",
-        boxShadow: "0 4px 8px rgba(0,0,0,0.1)",
+        color: "white",
     };
 }
 
