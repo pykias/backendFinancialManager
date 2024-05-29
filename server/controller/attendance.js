@@ -1,8 +1,7 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
+const getAttendanceAbl = require('../abl/attendance/getAttendanceAbl');
 
-const UpdateAbl = require("../abl/attendance/updateAbl");
-
-router.post("/update", UpdateAbl);
+router.post('/get', getAttendanceAbl);
 
 module.exports = router;

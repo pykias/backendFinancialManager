@@ -4,7 +4,7 @@ import Button from "react-bootstrap/Button";
 import { format } from "date-fns";
 import './TransactionCard.css'; // Import the CSS file
 
-function TransactionCard({ transaction, setShowTransactionForm }) {
+function TransactionCard({ transaction, setShowTransactionForm, loggedInUser }) {
     const isIncome = transaction.type === "income";
     const cardStyle = {
         borderLeft: `5px solid ${isIncome ? "green" : "red"}`,
@@ -49,23 +49,25 @@ function TransactionCard({ transaction, setShowTransactionForm }) {
                         })}
                     </div>
                 </div>
-                <div className="minimalist-card-actions">
-                    <Button
-                        variant="primary"
-                        onClick={() => setShowTransactionForm(transaction)}
-                        className="minimalist-button-action"
-                    >
-                        Upravit
-                    </Button>
-                    <Button
-                        variant="danger"
-                        style={{ marginLeft: "10px" }}
-                        onClick={() => handleDelete(transaction.id)}
-                        className="minimalist-button-action"
-                    >
-                        Smazat
-                    </Button>
-                </div>
+                {loggedInUser && (
+                    <div className="minimalist-card-actions">
+                        <Button
+                            variant="primary"
+                            onClick={() => setShowTransactionForm(transaction)}
+                            className="minimalist-button-action"
+                        >
+                            Upravit
+                        </Button>
+                        <Button
+                            variant="danger"
+                            style={{ marginLeft: "10px" }}
+                            onClick={() => handleDelete(transaction.id)}
+                            className="minimalist-button-action"
+                        >
+                            Smazat
+                        </Button>
+                    </div>
+                )}
             </Card.Body>
         </Card>
     );

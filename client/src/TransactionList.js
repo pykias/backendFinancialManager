@@ -32,6 +32,7 @@ function TransactionList() {
                         <TransactionCard
                             transaction={transaction}
                             setShowTransactionForm={setShowTransactionForm}
+                            loggedInUser={loggedInUser}
                         />
                     </Col>
                 ))}
