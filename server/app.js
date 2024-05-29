@@ -11,7 +11,6 @@ app.use(express.urlencoded({ extended: true }));
 // Import controllers
 const transactionController = require("./controller/transaction");
 const userController = require("./controller/user");
-const attendanceController = require("./controller/attendance");
 
 app.get("/", (req, res) => {
     res.send("Welcome to the Financial Management App!");
