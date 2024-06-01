@@ -130,7 +130,7 @@ function TransactionListProvider({ children }) {
                 });
             } else {
                 const responseJson = await response.json();
-                throw new Error(responseJson.message);
+                new Error(responseJson.message);
             }
         } catch (error) {
             setTransactionLoadObject((current) => ({

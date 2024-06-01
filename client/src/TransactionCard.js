@@ -25,7 +25,7 @@ function TransactionCard({ transaction, setShowTransactionForm, loggedInUser }) 
                 window.location.reload(); // Reload the page to reflect changes
             } else {
                 const responseJson = await response.json();
-                throw new Error(responseJson.message);
+                new Error(responseJson.message);
             }
         } catch (error) {
             console.error("Error deleting transaction:", error.message);

@@ -3,7 +3,7 @@ import { TransactionListContext } from "./TransactionListContext";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 
-function TransactionForm({ transaction, onHide, onSave }) {
+function TransactionForm({ transaction, onHide }) {
     const { handlerMap } = useContext(TransactionListContext);
     const [formData, setFormData] = useState({
         date: "",
