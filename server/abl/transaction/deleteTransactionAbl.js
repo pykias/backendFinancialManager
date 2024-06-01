@@ -38,7 +38,7 @@ async function DeleteTransactionAbl(req, res) {
     }
 
     // Odstranění transakce
-    transactionDao.remove(id);
+    await transactionDao.remove(id);
     res.json({ message: "Transaction successfully deleted" });
   } catch (e) {
     res.status(500).json({ message: e.message });
