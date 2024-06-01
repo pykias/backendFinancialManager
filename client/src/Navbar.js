@@ -11,7 +11,7 @@ import Button from "react-bootstrap/Button";
 import { Form } from "react-bootstrap";
 
 function NavBar() {
-    const { userList, loggedInUser, handlerMap } = useContext(UserContext);
+    const { loggedInUser, handlerMap } = useContext(UserContext);
     const navigate = useNavigate();
     const [loginFormData, setLoginFormData] = useState({ email: '', password: '' });
 

@@ -6,7 +6,7 @@ const ListAbl = require("../abl/transaction/listTransactionAbl");
 const CreateAbl = require("../abl/transaction/createTransactionAbl");
 const UpdateAbl = require("../abl/transaction/updateTransactionAbl");
 const DeleteAbl = require("../abl/transaction/deleteTransactionAbl");
-const loadFinancialOverviewAbl = require("../abl/transaction/loadFinancialOverviewAbl");
+const loadFinancialOverviewAbl = require("../abl/financialOverview/loadFinancialOverviewAbl");
 
 router.get("/get", GetAbl);
 router.get("/list", ListAbl);
