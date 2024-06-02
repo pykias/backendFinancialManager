@@ -7,7 +7,7 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import './TransactionList.css'; // Import the CSS file
+import './TransactionList.css';
 
 function TransactionList() {
     const { transactionList, handlerMap } = useContext(TransactionListContext);

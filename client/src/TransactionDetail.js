@@ -1,7 +1,6 @@
 import TransactionSummary from "./TransactionSummary";
 
 function TransactionDetail({ transaction }) {
-    // Pokud nejsou žádné položky, nastav celkovou částku na 0
     const totalAmount = transaction.items
         ? transaction.items.reduce((sum, item) => sum + item.amount, 0)
         : 0;

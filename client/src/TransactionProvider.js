@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-
 import { TransactionContext } from "./TransactionContext.js";
 
 function TransactionProvider({ children }) {
@@ -16,7 +15,7 @@ function TransactionProvider({ children }) {
         const transactionId = searchParams.get("id");
         if (!transactionId) {
             console.log("No transaction ID provided.");
-            return; // Předčasně ukončíme funkci, pokud není ID dostupné
+            return;
         }
         const response = await fetch(`http://localhost:8000/transaction/get?id=${transactionId}`, {
             method: "GET",

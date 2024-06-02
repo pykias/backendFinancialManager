@@ -21,8 +21,8 @@ function TransactionCard({ transaction, setShowTransactionForm, loggedInUser }) 
                 body: JSON.stringify({ id: transactionId }),
             });
             if (response.ok) {
-                setShowTransactionForm(null); // Hide the form after deletion
-                window.location.reload(); // Reload the page to reflect changes
+                setShowTransactionForm(null);
+                window.location.reload();
             } else {
                 const responseJson = await response.json();
                 new Error(responseJson.message);

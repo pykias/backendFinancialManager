@@ -28,7 +28,7 @@ const UserProvider = ({ children }) => {
             const response = await fetch('http://localhost:8000/user/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(user), // ujistěte se, že user obsahuje { name, email, password }
+                body: JSON.stringify(user),
             });
             if (response.ok) {
                 await handleLoadUsers();
@@ -47,7 +47,7 @@ const UserProvider = ({ children }) => {
             const response = await fetch('http://localhost:8000/user/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(credentials), // ujistěte se, že credentials obsahuje { email, password }
+                body: JSON.stringify(credentials),
             });
             if (response.ok) {
                 const user = await response.json();
@@ -55,10 +55,10 @@ const UserProvider = ({ children }) => {
                 setUserLoadObject(prevState => ({ state: 'ready', data: prevState.data, error: null }));
             } else {
                 const error = await response.json();
-                setUserLoadObject(prevState => ({ state: 'error', data: [], error: error.message }));
+                setUserLoadObject({ state: 'error', data: [], error: error.message });
             }
         } catch (error) {
-            setUserLoadObject(prevState => ({ state: 'error', data: [], error: error.message }));
+            setUserLoadObject ({ state: 'error', data: [], error: error.message });
         }
     };
 
